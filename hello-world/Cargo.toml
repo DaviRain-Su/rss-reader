@@ -12,6 +12,9 @@ wasm-bindgen = { version = "0.2.82", features = ["serde-serialize"] }
 wasm-bindgen-futures = "0.4.32"
 web-sys = "0.3.59"
 yew = "0.19"
+log = "0.4.17"
+gloo = "0.8.0"
+serde_json = "1.0.86"
 
 [workspace]
 members = ["src-tauri"]

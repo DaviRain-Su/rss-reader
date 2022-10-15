@@ -13,11 +13,23 @@ extern "C" {
     fn log(s: &str);
 }
 
+#[derive(Deserialize, Serialize)]
+struct MyObject {
+    name: String,
+    favor: String,
+}
+
 #[function_component(App)]
 pub fn app() -> Html {
+//    !("function component App Module!");
+    let name = "Davirian";
+    gloo::console::log!(name);
+    let object = MyObject {
+        name: "Davirian".to_owned(),
+        favor: "Rust".to_owned(),
+    };
+    gloo::console::log!(serde_json::to_string_pretty(&object).unwrap());
     html! {
-    <>
         <h1>{"Hello World!"}</h1>
-    </>
     }
 }
