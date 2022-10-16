@@ -5,7 +5,7 @@ use std::sync::Mutex;
 use crate::components::{RssChannel, RssImage, RssItem};
 use crate::db::Db;
 
-pub async fn process(channel: Channel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<()> {
+pub async fn process(user_address: String, channel: Channel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<()> {
     let channel_title = channel.title.clone();
     let channel_link = channel.link.clone();
     let channel_description = channel.description.clone();
@@ -41,6 +41,6 @@ pub async fn process(channel: Channel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<(
     let mut db = db.lock().unwrap();
 
     // save data to DB
-    db.save("davirain.eth".to_owned(), rss_channel).await?;
+    db.save(user_address, rss_channel).await?;
     Ok(())
 }

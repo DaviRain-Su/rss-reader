@@ -9,6 +9,7 @@ use crate::db::GLOBAL_DATA;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // https://guoyu.submirror.xyz
+    // https://submirror.xyz/0xA15f95B1BD801BFd67E769584F65cF15add56b6F
 
     let response = reqwest::get("https://guoyu.submirror.xyz")
         .await?
@@ -19,40 +20,18 @@ async fn main() -> anyhow::Result<()> {
 
     // println!("{:#?}", channel);
 
-    preprocess::process(channel, &GLOBAL_DATA);
+    preprocess::process("davirain.eth".to_string(), channel, &GLOBAL_DATA).await?;
 
     // println!("GLOBAL_DATA: {:#?}", GLOBAL_DATA);
 
     let tep = GLOBAL_DATA.lock().unwrap();
-    let rss_channel = tep.get("davirain.eth".to_owned()).unwrap();
-    // println!("{:#?}", rss_channel);
+    let rss_articles = tep
+        .get_rss_articles("davirain.eth".to_owned(), "guoyu.eth".to_string())
+        .unwrap();
+    // let rss_articles = tep
+    //     .get_rss_articles("davirain.eth".to_owned(), "0xA15f95B1BD801BFd67E769584F65cF15add56b6F".to_string())
+    //     .unwrap();
 
-    for item in rss_channel.items.iter() {
-        println!("🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈");
-        let link = item.link.clone().unwrap_or_default();
-        let response = reqwest::get(link).await?.text().await?;
-        let dom = tl::parse(&response, tl::ParserOptions::new().track_ids()).unwrap();
-        // let parser = dom.parser();
-
-        // parse mirror title
-        let handle = dom
-            .query_selector("title")
-            .and_then(|mut iter| iter.next())
-            .unwrap();
-        let node = handle.get(dom.parser()).unwrap();
-
-        println!("{}", node.inner_text(dom.parser()));
-
-        let _ = dom.query_selector("p").map(|mut iter| loop {
-            if let Some(handle) = iter.next() {
-                let node = handle.get(dom.parser()).unwrap();
-                println!("{}", node.inner_text(dom.parser()));
-            } else {
-                break;
-            }
-        });
-    }
-    // println!("🎈🎈🎈🎈🎈🎈🎈{:#?}", parser);
-    // fs::write("guoyu.html", format!("{:#?}", parser).as_bytes())?;
+    println!("{}", rss_articles);
     Ok(())
 }
