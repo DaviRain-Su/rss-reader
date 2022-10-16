@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RssChannel {
@@ -30,6 +30,11 @@ pub struct RssItem {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Article {
-    pub title: String, // Element(<title>)
-    pub phases: Vec<String>, // Element(<p>)
+    pub title: String,       // Element(<title>)
+    pub phases: Vec<Section>, // Element(<p>)
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Section {
+    content: String,
 }

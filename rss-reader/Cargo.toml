@@ -1,5 +1,5 @@
 [package]
-name = "fetch-rss-data"
+name = "rss-reader"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,9 +7,10 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.65"
+html2md = "0.2.13"
 once_cell = "1.15.0"
 reqwest = "0.11.12"
 rss = "2.0.1"
-scraper = "0.13.0"
 serde = { version = "1.0.145", features = ["derive"] }
+tl = "0.7.7"
 tokio = { version = "1.21.2", features = ["full"] }
