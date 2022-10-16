@@ -32,5 +32,9 @@ impl Db {
         self.sub_mirror.insert(address.clone(), rss_channel.rss_url().to_owned());
         self.rss_channels.insert(address, rss_channel);
     }
+
+    pub fn get(&self, address: String) -> Option<&RssChannel>{ 
+        self.rss_channels.get(&address)
+    }
 }
 

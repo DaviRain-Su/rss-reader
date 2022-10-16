@@ -27,3 +27,9 @@ pub struct RssItem {
     pub link: Option<String>,
     pub public_date: Option<String>,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Article {
+    pub title: String, // Element(<title>)
+    pub phases: Vec<String>, // Element(<p>)
+}
