@@ -21,7 +21,6 @@ struct MyObject {
 
 #[function_component(App)]
 pub fn app() -> Html {
-//    !("function component App Module!");
     let name = "Davirian";
     gloo::console::log!(name);
     let object = MyObject {
