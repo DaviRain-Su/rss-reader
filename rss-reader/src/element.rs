@@ -1,5 +1,5 @@
 use std::fmt::{Display, self};
-
+use colored::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -53,9 +53,9 @@ impl Default for Articles {
 
 impl Display for Articles {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.channel_title)?;
-        write!(f, "{}", self.channel_link)?;
-        write!(f, "{}", self.description)?;
+        write!(f, "{}", self.channel_title.green())?;
+        write!(f, "{}", self.channel_link.green())?;
+        write!(f, "{}", self.description.black())?;
         for article in self.articles.iter() {
             write!(f, "{}", article)?;
             write!(f, "\n\n")?;
@@ -72,11 +72,16 @@ pub struct Article {
 
 impl Display for Article { 
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "🌞Title: {}🌞\n", self.title)?;
+        write!(f, "🌞Title: {}🌞\n", self.title.green())?;
         // TODO(davirain) get screen width
         write!(f, "------------------------------------\n")?;
-        for section in self.phases.iter() {
-            write!(f, "    {}\n", section)?;
+        for (idx, section) in self.phases.iter().enumerate() {
+            if idx % 2 == 0 {
+                write!(f, "    {}\n", section.to_string().bright_red())?;
+            } else {
+                write!(f, "    {}\n", section.to_string().yellow())?;
+            }
+            
         }
         Ok(())
     }
