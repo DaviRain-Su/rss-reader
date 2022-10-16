@@ -36,7 +36,7 @@ This template should help get you started developing with Tauri and Yew.
 - [ ] Handling Form Submit Events - Introduction to Yew.rs
 - [ ] Use Context Hook - Introduction to Yew.rs
 - [ ] Use Effect Hook - Introduction to Yew.rs
-- [] Setting Up Yew Router - Introduction to Yew.rs
+- [ ] Setting Up Yew Router - Introduction to Yew.rs
 - [ ] Linking to Pages - Introduction to Yew.rs
 - [ ] Programatic Linking to Pages - Introduction to Yew.rs
 - [ ] Struct Components - Introduction to Yew.rs
