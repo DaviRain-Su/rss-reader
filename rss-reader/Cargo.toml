@@ -14,3 +14,4 @@ rss = "2.0.1"
 serde = { version = "1.0.145", features = ["derive"] }
 tl = "0.7.7"
 tokio = { version = "1.21.2", features = ["full"] }
+yew = "0.19.3"
