@@ -7,9 +7,9 @@ This template should help get you started developing with Tauri and Yew.
 [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
 
 ## Course Concepts
-[x] Trailer - Introduction to Yew.rs
-[x] Introduction the Introduction to Yew.rs Course
-[x] Introduction to Yew.rs Course
+- [x] Trailer - Introduction to Yew.rs
+- [x] Introduction the Introduction to Yew.rs Course
+- [x] Introduction to Yew.rs Course
 [x] Prequisites - Introduction to Yew.rs
 [x] Join the community - Introduction to Yew.rs
 [x] Setting up Rust - Introduction to Yew.rs
