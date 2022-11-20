@@ -5,7 +5,6 @@
 use std::fmt::Display;
 use opml::OPML;
 
-
 use rss::*;
 use serde::Deserialize;
 use structopt::StructOpt;
@@ -23,16 +22,9 @@ use crate::{db::GLOBAL_DATA, preprocess::process};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // https://guoyu.submirror.xyz
-    // https://submirror.xyz/0xA15f95B1BD801BFd67E769584F65cF15add56b6F
-
-    // read default Wallet address
     let default_config = include_str!("../.rss/RAW.opml");
-    // println!("{}", default_config);
     let document = OPML::from_str(default_config)?;
     println!("{:#?}", document);
-    // let config: Config = toml::from_str(default_config)?;
-    // println!("{:?}", config);
 
     // let opt = ApplicationArguments::from_args();
     // println!("{:?}", opt);

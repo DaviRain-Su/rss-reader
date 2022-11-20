@@ -4,6 +4,7 @@
 ## feature
 
 - [x] color print to terminal
+- [x] read rss file from opml file
 - [ ] command line reader rss article
 - [ ] login by ehtereum address, or near address, or solana address
 - [ ] cache by store to local storage
