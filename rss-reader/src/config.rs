@@ -36,4 +36,18 @@ impl Config {
 
         result
     }
+
+    pub fn outlines(&self, index: usize) -> Vec<String> {
+        let mut result = vec![];
+        if let Some(outline) = self.body().outlines.get(index) {
+            for (idx, item) in outline.outlines.iter().enumerate() {
+                result.push(format!(
+                    "🎈{}: {}",
+                    idx,
+                    item.title.clone().unwrap_or_default()
+                ));
+            }
+        }
+        result
+    }
 }
