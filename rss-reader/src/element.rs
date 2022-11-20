@@ -1,6 +1,6 @@
-use std::fmt::{Display, self};
 use colored::*;
 use serde::{Deserialize, Serialize};
+use std::fmt::{self, Display};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RssChannel {
@@ -70,7 +70,7 @@ pub struct Article {
     pub phases: Vec<Section>, // Element(<p>)
 }
 
-impl Display for Article { 
+impl Display for Article {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "🌞Title: {}🌞\n", self.title.green())?;
         // TODO(davirain) get screen width
@@ -81,7 +81,6 @@ impl Display for Article {
             } else {
                 write!(f, "    {}\n", section.to_string().yellow())?;
             }
-            
         }
         Ok(())
     }

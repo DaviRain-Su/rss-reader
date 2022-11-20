@@ -1,28 +1,69 @@
+#![allow(unused_imports)]
+#![allow(unused_assignments)]
+#![allow(dead_code)]
+
+use std::fmt::Display;
+use opml::OPML;
+
+
 use rss::*;
+use serde::Deserialize;
+use structopt::StructOpt;
+
 pub mod db;
 pub mod element;
 pub mod preprocess;
+pub mod config;
+pub use config::Config;
+pub mod command;
+pub use command::ApplicationArguments;
 
-use crate::db::GLOBAL_DATA;
+use crate::{db::GLOBAL_DATA, preprocess::process};
+
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // https://guoyu.submirror.xyz
     // https://submirror.xyz/0xA15f95B1BD801BFd67E769584F65cF15add56b6F
 
-    let response = reqwest::get("https://guoyu.submirror.xyz")
-        .await?
-        .bytes()
-        .await?;
+    // read default Wallet address
+    let default_config = include_str!("../.rss/RAW.opml");
+    // println!("{}", default_config);
+    let document = OPML::from_str(default_config)?;
+    println!("{:#?}", document);
+    // let config: Config = toml::from_str(default_config)?;
+    // println!("{:?}", config);
 
-    let channel = Channel::read_from(&response[..])?;
-    preprocess::process("davirain.eth".to_string(), channel, &GLOBAL_DATA).await?;
-    
-    let tep = GLOBAL_DATA.lock().unwrap();
-    let rss_articles = tep
-        .get_rss_articles("davirain.eth".to_owned(), "guoyu.eth".to_string())
-        .unwrap();
+    // let opt = ApplicationArguments::from_args();
+    // println!("{:?}", opt);
+    // match opt.command {
+    //     Command::Subscribe(SubscribeRss { url }) => {
+    //         println!("subscribe url: {:#?}", url);
 
-    println!("{}", rss_articles);
+    //         let url = if let Some(val) = url {
+    //             val
+    //         } else {
+    //             panic!("Invalid url");
+    //         };
+
+    //         let response = reqwest::get(url)
+    //             .await?
+    //             .bytes()
+    //             .await?;
+
+    //         let channel = Channel::read_from(&response[..])?;
+    //         process("davirain.eth".to_string(), channel, &GLOBAL_DATA).await?;
+
+    //         let tep = GLOBAL_DATA.lock().unwrap();
+    //         let rss_articles = tep
+    //             .get_rss_articles("davirain.eth".to_owned(), "guoyu.eth".to_string())
+    //             .unwrap();
+
+    //         println!("{}", rss_articles);
+    //     }
+    //     Command::ListRssArticles => todo!(),
+    //     Command::ReadOneArticle => todo!(),
+    // }
+
     Ok(())
 }
