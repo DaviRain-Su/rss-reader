@@ -1,18 +1,31 @@
-use structopt::StructOpt;
 use anyhow::Result;
 use reqwest::Url;
+use structopt::StructOpt;
 
 /// Rss Reader Command
 #[derive(Debug, StructOpt)]
 pub enum Command {
+    /// run rss reader app
+    #[structopt(name = "run-app")]
+    RunApp,
+    /// subscribe single rss source
     #[structopt(name = "subscribe-rss")]
     Subscribe(SubscribeRss),
+    /// list rss articles
     #[structopt(name = "list-rss-articles")]
-    ListRssArticles,
+    ListRssArticles(ListRssArticles),
+    /// read one article
     #[structopt(name = "read-one-article")]
     ReadOneArticle,
+    /// rss category
+    #[structopt(name = "category")]
+    Category,
 }
 
+#[derive(Debug, StructOpt)]
+pub struct ListRssArticles {
+    pub index: Option<usize>,
+}
 
 #[derive(Debug, StructOpt)]
 pub struct SubscribeRss {
