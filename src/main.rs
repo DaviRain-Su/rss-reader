@@ -1,13 +1,6 @@
-#![allow(unused_imports)]
 #![allow(unused_assignments)]
-#![allow(dead_code)]
 
 use command::ListRssArticles;
-use opml::OPML;
-use std::fmt::Display;
-
-use rss::*;
-use serde::Deserialize;
 use structopt::StructOpt;
 
 pub mod config;
@@ -19,8 +12,6 @@ pub mod command;
 pub use command::ApplicationArguments;
 pub mod cache;
 pub mod ui;
-
-use crate::{db::GLOBAL_DATA, preprocess::process};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

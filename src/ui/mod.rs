@@ -3,21 +3,16 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use std::{error::Error, io};
+use std::io;
 use tui::{
     backend::{Backend, CrosstermBackend},
-    layout::{Alignment, Constraint, Direction, Layout},
-    style::{Color, Modifier, Style},
-    text::{Span, Spans},
-    widgets::{Block, BorderType, Borders, List, ListItem, ListState, Paragraph, Tabs, Wrap},
-    Frame, Terminal,
+    Terminal,
 };
 
 use crate::Config;
 
-pub mod stateful_list;
-use stateful_list::StatefulList;
 pub mod app;
+pub mod stateful_list;
 use app::App;
 pub mod ui;
 use ui::ui;

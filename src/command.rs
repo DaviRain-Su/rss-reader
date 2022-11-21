@@ -30,7 +30,7 @@ pub struct ListRssArticles {
 #[derive(Debug, StructOpt)]
 pub struct SubscribeRss {
     #[structopt(parse(try_from_str = parse_url))]
-    url: Option<Url>,
+    pub url: Option<Url>,
 }
 
 fn parse_url(s: &str) -> Result<Url> {

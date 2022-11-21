@@ -13,11 +13,11 @@ pub struct TitleAndRssUrl {
 }
 
 impl TitleAndRssUrl {
-    fn title(&self) -> &str {
+    pub fn title(&self) -> &str {
         &self.title
     }
 
-    fn rss_url(&self) -> &str {
+    pub fn rss_url(&self) -> &str {
         &self.rss_url
     }
 }
