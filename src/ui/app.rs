@@ -1,11 +1,11 @@
 use super::stateful_list::StatefulList;
-use crate::Config;
+use crate::{Config, config::TitleAndRssUrl};
 
 pub struct App<'a> {
     pub config: Config,
     pub titles: Vec<&'a str>,
     pub index: usize,
-    pub items: Vec<StatefulList<(String, usize)>>,
+    pub items: Vec<StatefulList<(TitleAndRssUrl, usize)>>,
 }
 
 impl<'a> App<'a> {
@@ -16,8 +16,8 @@ impl<'a> App<'a> {
             .outlines(0)
             .into_iter()
             .enumerate()
-            .map(|(idx, value)| (value.title.clone(), idx))
-            .collect::<Vec<(String, usize)>>();
+            .map(|(idx, value)| (value, idx))
+            .collect::<Vec<(TitleAndRssUrl, usize)>>();
 
         items.push(StatefulList::with_items(titles));
 
@@ -39,8 +39,8 @@ impl<'a> App<'a> {
                 .outlines(self.index)
                 .into_iter()
                 .enumerate()
-                .map(|(idx, value)| (value.title.clone(), idx))
-                .collect::<Vec<(String, usize)>>();
+                .map(|(idx, value)| (value, idx))
+                .collect::<Vec<(TitleAndRssUrl, usize)>>();
 
             self.items.push(StatefulList::with_items(titles));
         }
@@ -60,8 +60,8 @@ impl<'a> App<'a> {
                 .outlines(self.index)
                 .into_iter()
                 .enumerate()
-                .map(|(idx, value)| (value.title.clone(), idx))
-                .collect::<Vec<(String, usize)>>();
+                .map(|(idx, value)| (value, idx))
+                .collect::<Vec<(TitleAndRssUrl, usize)>>();
 
             self.items.push(StatefulList::with_items(titles));
         }

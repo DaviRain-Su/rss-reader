@@ -58,7 +58,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
             .items()
             .iter()
             .map(|i| {
-                let lines = vec![Spans::from(i.0.clone())];
+                let lines = vec![Spans::from(i.0.title.clone())];
                 ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
             })
             .collect::<Vec<ListItem>>();
