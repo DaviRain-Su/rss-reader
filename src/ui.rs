@@ -190,7 +190,7 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
 
     let block = Block::default().style(Style::default().bg(Color::White).fg(Color::Black));
     f.render_widget(block, size);
-    
+
     let titles = app
         .titles
         .iter()
@@ -218,36 +218,34 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(chunks[1]);
-    match app.index {
-        n => {
-            // get title
-            let title = app.titles.get(n).unwrap_or(&DEFAULT_TIEL).clone();
 
-            // Iterate through all elements in the `items` app and append some debug text to it.
-            if let Some(value) = app.items.get(n) {
-                let items = value
-                    .items
-                    .iter()
-                    .map(|i| {
-                        let lines = vec![Spans::from(i.0.clone())];
-                        ListItem::new(lines)
-                            .style(Style::default().fg(Color::Black).bg(Color::White))
-                    })
-                    .collect::<Vec<ListItem>>();
+    let n = app.index;
+    
+    // get title
+    let title = app.titles.get(n).unwrap_or(&DEFAULT_TIEL).clone();
 
-                // Create a List from all list items and highlight the currently selected one
-                let items = List::new(items)
-                    .block(Block::default().borders(Borders::ALL).title(title))
-                    .highlight_style(
-                        Style::default()
-                            .bg(Color::LightGreen)
-                            .add_modifier(Modifier::BOLD),
-                    )
-                    .highlight_symbol(">> ");
+    // Iterate through all elements in the `items` app and append some debug text to it.
+    if let Some(value) = app.items.get(n) {
+        let items = value
+            .items
+            .iter()
+            .map(|i| {
+                let lines = vec![Spans::from(i.0.clone())];
+                ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
+            })
+            .collect::<Vec<ListItem>>();
 
-                // We can now render the item list
-                f.render_stateful_widget(items, chunks[0], &mut app.items[n].state);
-            }
-        }
+        // Create a List from all list items and highlight the currently selected one
+        let items = List::new(items)
+            .block(Block::default().borders(Borders::ALL).title(title))
+            .highlight_style(
+                Style::default()
+                    .bg(Color::LightGreen)
+                    .add_modifier(Modifier::BOLD),
+            )
+            .highlight_symbol(">> ");
+
+        // We can now render the item list
+        f.render_stateful_widget(items, chunks[0], &mut app.items[n].state);
     }
 }
