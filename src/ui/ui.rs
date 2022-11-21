@@ -80,43 +80,44 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
             .highlight_symbol(">> ");
 
         // We can now render the item list
-        f.render_stateful_widget(items, chunks[0], &mut app.items[n].state_mut());
+        f.render_stateful_widget(items.clone(), chunks[0], &mut app.items[n].state_mut());
+        f.render_stateful_widget(items, chunks[1], &mut app.items[n].state_mut());
     }
-    // display rss_url content
-    if let Some(value) = app.items.get(n) {
-        // display title
-        let items = value
-            .items()
-            .iter()
-            .map(|i| {
-                let rss_url = i.0.rss_url.clone();
-                rss_url
-            })
-            .collect::<Vec<String>>();
+    // // display rss_url content
+    // if let Some(value) = app.items.get(n) {
+    //     // display title
+    //     let items = value
+    //         .items()
+    //         .iter()
+    //         .map(|i| {
+    //             let rss_url = i.0.rss_url.clone();
+    //             rss_url
+    //         })
+    //         .collect::<Vec<String>>();
 
-        for item in items.iter() {
-            let titles = get_titles(item).unwrap_or(vec!["unknow 404".into()]).into_iter().map(|item| {
-                let lines = vec![Spans::from(item)];
-                ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
-            }).collect::<Vec<ListItem>>();
+    //     for item in items.iter() {
+    //         let titles = get_titles(item).unwrap_or(vec!["unknow 404".into()]).into_iter().map(|item| {
+    //             let lines = vec![Spans::from(item)];
+    //             ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
+    //         }).collect::<Vec<ListItem>>();
 
-            // Create a List from all list items and highlight the currently selected one
-            let items = List::new(titles)
-                .block(
-                    Block::default()
-                        .borders(Borders::ALL)
-                        .title(title)
-                        .title_alignment(Alignment::Center),
-                )
-                .highlight_style(
-                    Style::default()
-                        .bg(Color::LightGreen)
-                        .add_modifier(Modifier::BOLD),
-                )
-                .highlight_symbol(">> ");
+    //         // Create a List from all list items and highlight the currently selected one
+    //         let items = List::new(titles)
+    //             .block(
+    //                 Block::default()
+    //                     .borders(Borders::ALL)
+    //                     .title(title)
+    //                     .title_alignment(Alignment::Center),
+    //             )
+    //             .highlight_style(
+    //                 Style::default()
+    //                     .bg(Color::LightGreen)
+    //                     .add_modifier(Modifier::BOLD),
+    //             )
+    //             .highlight_symbol(">> ");
 
-            // We can now render the item list
-            f.render_stateful_widget(items, chunks[1], &mut app.items[n].state_mut());
-        }    
-    }
+    //         // We can now render the item list
+    //         f.render_stateful_widget(items, chunks[1], &mut app.items[n].state_mut());
+    //     }    
+    // }
 }
