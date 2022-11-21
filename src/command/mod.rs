@@ -8,15 +8,9 @@ pub enum Command {
     /// run rss reader app
     #[structopt(name = "run-app")]
     RunApp,
-    /// subscribe single rss source
+    /// subscribe a new rss source
     #[structopt(name = "subscribe-rss")]
     Subscribe(SubscribeRss),
-    /// list rss articles
-    #[structopt(name = "list-rss-articles")]
-    ListRssArticles(ListRssArticles),
-    /// read one article
-    #[structopt(name = "read-one-article")]
-    ReadOneArticle,
     /// rss category
     #[structopt(name = "category")]
     Category,
