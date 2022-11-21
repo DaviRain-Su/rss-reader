@@ -54,6 +54,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
 
     // Iterate through all elements in the `items` app and append some debug text to it.
     if let Some(value) = app.items.get(n) {
+        // display title
         let items = value
             .items()
             .iter()
@@ -80,5 +81,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
 
         // We can now render the item list
         f.render_stateful_widget(items, chunks[0], &mut app.items[n].state_mut());
+
+        // display rss_url content
     }
 }

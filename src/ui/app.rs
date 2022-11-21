@@ -1,5 +1,5 @@
 use super::stateful_list::StatefulList;
-use crate::{Config, config::TitleAndRssUrl};
+use crate::{config::TitleAndRssUrl, Config};
 
 pub struct App<'a> {
     pub config: Config,

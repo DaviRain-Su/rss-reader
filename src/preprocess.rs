@@ -6,7 +6,6 @@ use crate::db::Db;
 use crate::element::{RssChannel, RssImage, RssItem};
 
 pub async fn process(
-    user_address: String,
     channel: Channel,
     db: &Lazy<Mutex<Db>>,
 ) -> anyhow::Result<()> {
@@ -45,7 +44,7 @@ pub async fn process(
     let mut db = db.lock().unwrap();
 
     // save data to DB
-    db.save(user_address, rss_channel).await?;
+    db.save(rss_channel).await?;
 
     Ok(())
 }

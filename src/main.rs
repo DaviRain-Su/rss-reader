@@ -1,6 +1,7 @@
 #![allow(unused_assignments)]
 
 use command::ListRssArticles;
+use rss::Channel;
 use structopt::StructOpt;
 
 pub mod config;
@@ -10,6 +11,8 @@ pub mod preprocess;
 pub use config::Config;
 pub mod command;
 pub use command::ApplicationArguments;
+
+use crate::{db::GLOBAL_DATA, preprocess::process};
 pub mod cache;
 pub mod ui;
 
@@ -60,36 +63,24 @@ async fn main() -> anyhow::Result<()> {
         }
     }
 
-    // let opt = ApplicationArguments::from_args();
-    // println!("{:?}", opt);
-    // match opt.command {
-    //     Command::Subscribe(SubscribeRss { url }) => {
-    //         println!("subscribe url: {:#?}", url);
+    let response = reqwest::get("https://guoyu.submirror.xyz")
+        .await?
+        .bytes()
+        .await?;
 
-    //         let url = if let Some(val) = url {
-    //             val
-    //         } else {
-    //             panic!("Invalid url");
-    //         };
+    let channel = Channel::read_from(&response[..])?;
+    process(channel, &GLOBAL_DATA).await?;
 
-    //         let response = reqwest::get(url)
-    //             .await?
-    //             .bytes()
-    //             .await?;
+    let tep = GLOBAL_DATA.lock().unwrap();
+    // let rss_articles = tep
+    //     .get_rss_articles("davirain.eth".to_owned(), "guoyu.eth".to_string())
+    //     .unwrap();
 
-    //         let channel = Channel::read_from(&response[..])?;
-    //         process("davirain.eth".to_string(), channel, &GLOBAL_DATA).await?;
+    // println!("{}", rss_articles);
 
-    //         let tep = GLOBAL_DATA.lock().unwrap();
-    //         let rss_articles = tep
-    //             .get_rss_articles("davirain.eth".to_owned(), "guoyu.eth".to_string())
-    //             .unwrap();
+    let rss_titles = tep.get_rss_titles("guoyu.eth".to_string()).unwrap();
 
-    //         println!("{}", rss_articles);
-    //     }
-    //     Command::ListRssArticles => todo!(),
-    //     Command::ReadOneArticle => todo!(),
-    // }
+    println!("{:#?}", rss_titles);
 
     Ok(())
 }
