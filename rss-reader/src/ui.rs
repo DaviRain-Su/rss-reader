@@ -15,6 +15,8 @@ use tui::{
 
 use crate::Config;
 
+const DEFAULT_TIEL: &str = "Default title";
+
 struct StatefulList<T> {
     state: ListState,
     items: Vec<T>,
@@ -212,33 +214,33 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     match app.index {
         n => {
             // get title
-            let title = app.titles.get(n).unwrap().clone();
+            let title = app.titles.get(n).unwrap_or(&DEFAULT_TIEL).clone();
 
             // Iterate through all elements in the `items` app and append some debug text to it.
-            let items: Vec<ListItem> = app
-                .items
-                .get(n)
-                .unwrap()
-                .items
-                .iter()
-                .map(|i| {
-                    let lines = vec![Spans::from(i.0.clone())];
-                    ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
-                })
-                .collect();
+            if let Some(value) = app.items.get(n) {
+                let items = value
+                    .items
+                    .iter()
+                    .map(|i| {
+                        let lines = vec![Spans::from(i.0.clone())];
+                        ListItem::new(lines)
+                            .style(Style::default().fg(Color::Black).bg(Color::White))
+                    })
+                    .collect::<Vec<ListItem>>();
 
-            // Create a List from all list items and highlight the currently selected one
-            let items = List::new(items)
-                .block(Block::default().borders(Borders::ALL).title(title))
-                .highlight_style(
-                    Style::default()
-                        .bg(Color::LightGreen)
-                        .add_modifier(Modifier::BOLD),
-                )
-                .highlight_symbol(">> ");
+                // Create a List from all list items and highlight the currently selected one
+                let items = List::new(items)
+                    .block(Block::default().borders(Borders::ALL).title(title))
+                    .highlight_style(
+                        Style::default()
+                            .bg(Color::LightGreen)
+                            .add_modifier(Modifier::BOLD),
+                    )
+                    .highlight_symbol(">> ");
 
-            // We can now render the item list
-            f.render_stateful_widget(items, chunks[0], &mut app.items[n].state);
+                // We can now render the item list
+                f.render_stateful_widget(items, chunks[0], &mut app.items[n].state);
+            }
         }
     }
 }
