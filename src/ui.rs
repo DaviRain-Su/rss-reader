@@ -184,33 +184,40 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
 fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let size = f.size();
     let chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(10), Constraint::Percentage(80)].as_ref())
         .split(f.size());
 
     let block = Block::default().style(Style::default().bg(Color::White).fg(Color::Black));
     f.render_widget(block, size);
-    // let titles = app
-    //     .titles
-    //     .iter()
-    //     .map(|t| {
-    //         let (first, rest) = t.split_at(1);
-    //         Spans::from(vec![
-    //             Span::styled(first, Style::default().fg(Color::Yellow)),
-    //             Span::styled(rest, Style::default().fg(Color::Green)),
-    //         ])
-    //     })
-    //     .collect();
-    // let tabs = Tabs::new(titles)
-    //     .block(Block::default().borders(Borders::ALL).title("Tabs"))
-    //     .select(app.index)
-    //     .style(Style::default().fg(Color::Cyan))
-    //     .highlight_style(
-    //         Style::default()
-    //             .add_modifier(Modifier::BOLD)
-    //             .bg(Color::Black),
-    //     );
-    // f.render_widget(tabs, chunks[0]);
+    
+    let titles = app
+        .titles
+        .iter()
+        .map(|t| {
+            let (first, rest) = t.split_at(1);
+            Spans::from(vec![
+                Span::styled(first, Style::default().fg(Color::Yellow)),
+                Span::styled(rest, Style::default().fg(Color::Green)),
+            ])
+        })
+        .collect();
+
+    let tabs = Tabs::new(titles)
+        .block(Block::default().borders(Borders::ALL).title("Tabs"))
+        .select(app.index)
+        .style(Style::default().fg(Color::Cyan))
+        .highlight_style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .bg(Color::Black),
+        );
+    f.render_widget(tabs, chunks[0]);
+
+    let chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+        .split(chunks[1]);
     match app.index {
         n => {
             // get title
