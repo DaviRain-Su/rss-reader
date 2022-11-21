@@ -107,7 +107,7 @@ impl Display for Section {
 }
 
 impl RssChannel {
-    pub async fn process_rss_channel_to_article(&self) -> anyhow::Result<Articles> {
+    pub fn process_rss_channel_to_article(&self) -> anyhow::Result<Articles> {
         let mut articles = Articles::default();
         articles.channel_title = self.channel_title.clone();
         articles.channel_link = self.channel_link.clone();
@@ -120,14 +120,15 @@ impl RssChannel {
             let mut article = Article::default();
 
             let link = item.link.clone().unwrap_or_default();
-            let response = reqwest::get(link).await?.text().await?;
+            let response = reqwest::blocking::get(link)?.text()?;
             let dom = tl::parse(&response, tl::ParserOptions::new().track_ids()).unwrap();
 
             // parse mirror title
             let handle = dom
                 .query_selector("title")
                 .and_then(|mut iter| iter.next())
-                .unwrap();
+                .ok_or(anyhow::anyhow!("unknown title"))?;
+                
             let node = handle.get(dom.parser()).unwrap();
 
             let article_title = node.inner_text(dom.parser());

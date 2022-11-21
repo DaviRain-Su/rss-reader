@@ -29,17 +29,17 @@ impl Default for Db {
 }
 
 impl Db {
-    pub async fn save(&mut self, rss_channel: RssChannel) -> anyhow::Result<()> {
+    pub  fn save(&mut self, rss_channel: RssChannel) -> anyhow::Result<()> {
         let mirror_url = rss_channel.channel_link.clone();
         let mirror_address = get_author_address_or_name(&mirror_url);
-        
+
         // save rss_channels
         // key: articles address
         self.rss_channels
             .insert(mirror_address.to_string().clone(), rss_channel.clone());
 
         // save artivles
-        let temp_articles = rss_channel.process_rss_channel_to_article().await?;
+        let temp_articles = rss_channel.process_rss_channel_to_article()?;
         self.articles
             .insert(mirror_address.to_string().clone(), temp_articles);
 

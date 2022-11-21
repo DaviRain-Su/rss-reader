@@ -6,7 +6,6 @@ pub fn get_author_address_or_name(rss_url: &str) -> String {
     let mut new_author_address = String::new();
 
     if author_address.contains(".mirror.xyz") {
-        
         new_author_address = rss_url
             .split_once(".mirror.xyz")
             .unwrap_or_default()
@@ -15,11 +14,9 @@ pub fn get_author_address_or_name(rss_url: &str) -> String {
             .unwrap_or_default()
             .1
             .to_string();
-        
-            new_author_address.push_str(".eth");
 
+        new_author_address.push_str(".eth");
     } else if author_address.contains(".submirror.xyz") {
-
         new_author_address = rss_url
             .split_once(".submirror.xyz")
             .unwrap_or_default()
@@ -29,7 +26,6 @@ pub fn get_author_address_or_name(rss_url: &str) -> String {
             .1
             .to_string();
         new_author_address.push_str(".eth");
-        
     } else {
         new_author_address = author_address.to_string();
     }

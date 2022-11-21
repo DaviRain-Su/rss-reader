@@ -1,7 +1,6 @@
 #![allow(unused_assignments)]
 
 use command::ListRssArticles;
-use rss::Channel;
 use structopt::StructOpt;
 
 pub mod config;
@@ -15,10 +14,7 @@ pub mod cache;
 pub mod ui;
 pub mod utils;
 
-use crate::{db::GLOBAL_DATA, preprocess::process, utils::get_author_address_or_name};
-
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
+fn main() -> anyhow::Result<()> {
     let default_config = include_str!("../.rss/RAW.opml");
     let document = Config::from_str(default_config)?;
 
@@ -63,22 +59,6 @@ async fn main() -> anyhow::Result<()> {
                 .collect::<Vec<_>>();
         }
     }
-
-    let response = reqwest::get("https://guoyu.submirror.xyz")
-        .await?
-        .bytes()
-        .await?;
-
-    let channel = Channel::read_from(&response[..])?;
-    process(channel, &GLOBAL_DATA).await?;
-
-    let tep = GLOBAL_DATA.lock().unwrap();
-
-    let author_address_or_name = get_author_address_or_name("https://guoyu.submirror.xyz");
-   
-    let rss_titles = tep.get_rss_titles(author_address_or_name)?;
-
-    println!("{:#?}", rss_titles);
 
     Ok(())
 }

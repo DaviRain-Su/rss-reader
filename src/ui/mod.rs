@@ -50,9 +50,9 @@ pub fn run_ui(config: &Config) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> {
+fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App<'_>) -> anyhow::Result<()> {
     loop {
-        terminal.draw(|f| ui(f, &mut app))?;
+        terminal.draw(|f| { ui(f, &mut app); })?;
 
         if let Event::Key(key) = event::read()? {
             match key.code {
