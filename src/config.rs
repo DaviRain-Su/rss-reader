@@ -6,6 +6,22 @@ pub struct Config {
     rss_source_file: OPML,
 }
 
+#[derive(Debug, Deserialize, Clone)]
+pub struct TitleAndRssUrl {
+    pub title: String,
+    pub rss_url: String,
+}
+
+impl TitleAndRssUrl {
+    fn title(&self) -> &str {
+        &self.title
+    }
+    
+    fn rss_url(&self) -> &str {
+        &self.rss_url
+    }
+}
+
 impl Config {
     pub fn from_str(file: &str) -> Result<Self, anyhow::Error> {
         let document = OPML::from_str(file)?;
@@ -37,15 +53,19 @@ impl Config {
         result
     }
 
-    pub fn outlines(&self, index: usize) -> Vec<String> {
+    pub fn outlines(&self, index: usize) -> Vec<TitleAndRssUrl> {
         let mut result = vec![];
         if let Some(outline) = self.body().outlines.get(index) {
             for (idx, item) in outline.outlines.iter().enumerate() {
-                result.push(format!(
-                    "🎈{}: {}",
-                    idx,
-                    item.title.clone().unwrap_or_default()
-                ));
+                let value = TitleAndRssUrl {
+                    title: format!(
+                        "🎈{}: {}",
+                        idx,
+                        item.title.clone().unwrap_or_default()
+                    ),
+                    rss_url: format!("{}", item.xml_url.clone().unwrap_or_default())
+                };
+                result.push(value);
             }
         }
         result

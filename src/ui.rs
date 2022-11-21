@@ -74,14 +74,14 @@ impl<'a> App<'a> {
     fn new(config: Config, categoryes: Vec<&'a str>) -> App<'a> {
         let mut items = vec![];
 
-        let item = config
+        let titles = config
             .outlines(0)
             .into_iter()
             .enumerate()
-            .map(|(idx, value)| (value, idx))
+            .map(|(idx, value)| (value.title.clone(), idx))
             .collect::<Vec<(String, usize)>>();
 
-        items.push(StatefulList::with_items(item));
+        items.push(StatefulList::with_items(titles));
 
         App {
             config,
@@ -96,15 +96,15 @@ impl<'a> App<'a> {
 
         if let Some(_value) = self.items.get(self.index) {
         } else {
-            let item = self
+            let titles = self
                 .config
                 .outlines(self.index)
                 .into_iter()
                 .enumerate()
-                .map(|(idx, value)| (value, idx))
+                .map(|(idx, value)| (value.title.clone(), idx))
                 .collect::<Vec<(String, usize)>>();
 
-            self.items.push(StatefulList::with_items(item));
+            self.items.push(StatefulList::with_items(titles));
         }
     }
 
@@ -117,15 +117,15 @@ impl<'a> App<'a> {
 
         if let Some(_value) = self.items.get(self.index) {
         } else {
-            let item = self
+            let titles = self
                 .config
                 .outlines(self.index)
                 .into_iter()
                 .enumerate()
-                .map(|(idx, value)| (value, idx))
+                .map(|(idx, value)| (value.title.clone(), idx))
                 .collect::<Vec<(String, usize)>>();
 
-            self.items.push(StatefulList::with_items(item));
+            self.items.push(StatefulList::with_items(titles));
         }
     }
 }
