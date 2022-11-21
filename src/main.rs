@@ -11,10 +11,11 @@ pub mod preprocess;
 pub use config::Config;
 pub mod command;
 pub use command::ApplicationArguments;
-
-use crate::{db::GLOBAL_DATA, preprocess::process};
 pub mod cache;
 pub mod ui;
+pub mod utils;
+
+use crate::{db::GLOBAL_DATA, preprocess::process, utils::get_author_address_or_name};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -72,13 +73,10 @@ async fn main() -> anyhow::Result<()> {
     process(channel, &GLOBAL_DATA).await?;
 
     let tep = GLOBAL_DATA.lock().unwrap();
-    // let rss_articles = tep
-    //     .get_rss_articles("davirain.eth".to_owned(), "guoyu.eth".to_string())
-    //     .unwrap();
 
-    // println!("{}", rss_articles);
-
-    let rss_titles = tep.get_rss_titles("guoyu.eth".to_string()).unwrap();
+    let author_address_or_name = get_author_address_or_name("https://guoyu.submirror.xyz");
+   
+    let rss_titles = tep.get_rss_titles(author_address_or_name)?;
 
     println!("{:#?}", rss_titles);
 

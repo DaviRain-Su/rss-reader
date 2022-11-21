@@ -5,10 +5,7 @@ use std::sync::Mutex;
 use crate::db::Db;
 use crate::element::{RssChannel, RssImage, RssItem};
 
-pub async fn process(
-    channel: Channel,
-    db: &Lazy<Mutex<Db>>,
-) -> anyhow::Result<()> {
+pub async fn process(channel: Channel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<()> {
     let channel_title = channel.title.clone();
     let channel_link = channel.link.clone();
     let channel_description = channel.description.clone();

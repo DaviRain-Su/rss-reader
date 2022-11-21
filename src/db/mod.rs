@@ -2,7 +2,10 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
-use crate::element::{Articles, RssChannel};
+use crate::{
+    element::{Articles, RssChannel},
+    utils::get_author_address_or_name,
+};
 
 pub static GLOBAL_DATA: Lazy<Mutex<Db>> = Lazy::new(|| Mutex::new(Db::default()));
 
@@ -28,26 +31,8 @@ impl Default for Db {
 impl Db {
     pub async fn save(&mut self, rss_channel: RssChannel) -> anyhow::Result<()> {
         let mirror_url = rss_channel.channel_link.clone();
-        let (_, mirror_address) = mirror_url.rsplit_once("/").unwrap_or_default();
+        let mirror_address = get_author_address_or_name(&mirror_url);
         
-        // get author address from mirror address or rss author name
-        let mut new_mirror_address = String::new();
-        if mirror_address.contains(".mirror.xyz") {
-            new_mirror_address = mirror_url
-                .split_once(".mirror.xyz")
-                .unwrap_or_default()
-                .0
-                .split_once("//")
-                .unwrap_or_default()
-                .1
-                .to_string();
-            new_mirror_address.push_str(".eth");
-        } else {
-            new_mirror_address = mirror_address.to_string();
-        }
-        let mirror_address = new_mirror_address;
-        println!("{}", mirror_address);
-
         // save rss_channels
         // key: articles address
         self.rss_channels
@@ -55,33 +40,25 @@ impl Db {
 
         // save artivles
         let temp_articles = rss_channel.process_rss_channel_to_article().await?;
-        self.articles.insert(mirror_address.to_string().clone(), temp_articles);
+        self.articles
+            .insert(mirror_address.to_string().clone(), temp_articles);
 
         Ok(())
     }
 
-    pub fn get_rss_channel(
-        &self,
-        subscribe_author: String,
-    ) -> anyhow::Result<&RssChannel> {
+    pub fn get_rss_channel(&self, subscribe_author: String) -> anyhow::Result<&RssChannel> {
         self.rss_channels
             .get(&subscribe_author)
             .ok_or(anyhow::anyhow!("This author have not any articles"))
     }
 
-    pub fn get_rss_articles(
-        &self,
-        subscribe_author: String,
-    ) -> anyhow::Result<&Articles> {
+    pub fn get_rss_articles(&self, subscribe_author: String) -> anyhow::Result<&Articles> {
         self.articles
             .get(&subscribe_author)
             .ok_or(anyhow::anyhow!("This author have not any articles"))
     }
 
-    pub fn get_rss_titles(
-        &self,
-        subscribe_author: String,
-    ) -> anyhow::Result<Vec<String>> {
+    pub fn get_rss_titles(&self, subscribe_author: String) -> anyhow::Result<Vec<String>> {
         let result = self
             .articles
             .get(&subscribe_author)

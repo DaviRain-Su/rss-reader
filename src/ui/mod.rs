@@ -16,6 +16,7 @@ pub mod stateful_list;
 use app::App;
 pub mod ui;
 use ui::ui;
+pub mod logic;
 
 const DEFAULT_TIEL: &str = "Default title";
 
