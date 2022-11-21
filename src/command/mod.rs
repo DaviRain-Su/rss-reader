@@ -5,6 +5,8 @@ use structopt::StructOpt;
 /// Rss Reader Command
 #[derive(Debug, StructOpt)]
 pub enum Command {
+    /// init rss reader app
+    Init,
     /// run rss reader app
     #[structopt(name = "run-app")]
     RunApp,
@@ -31,6 +33,11 @@ fn parse_url(s: &str) -> Result<Url> {
     Ok(s.parse()?)
 }
 
+impl SubscribeRss {
+    // parse rss url 
+    // save rss data to databse 
+    // save rss url to opml file
+}
 /// Rss Reader app
 #[derive(Debug, StructOpt)]
 #[structopt(name = "rss-reader")]

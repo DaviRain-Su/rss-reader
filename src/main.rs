@@ -18,6 +18,12 @@ fn main() -> anyhow::Result<()> {
 
     let opt = ApplicationArguments::from_args();
     match opt.command {
+        command::Command::Init => {
+            // 1.  parse rss opml file, can speed by run multi thread
+            // 2. save rss article to databse, can speedn run multi thread
+            // display  0% ---> 100%
+            println!("init rss reader");
+        },
         command::Command::RunApp => {
             ui::run_ui(&document)?;
         }
