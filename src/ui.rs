@@ -220,7 +220,7 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .split(chunks[1]);
 
     let n = app.index;
-    
+
     // get title
     let title = app.titles.get(n).unwrap_or(&DEFAULT_TIEL).clone();
 
@@ -237,7 +237,7 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
 
         // Create a List from all list items and highlight the currently selected one
         let items = List::new(items)
-            .block(Block::default().borders(Borders::ALL).title(title))
+            .block(Block::default().borders(Borders::ALL).title(title).title_alignment(Alignment::Center))
             .highlight_style(
                 Style::default()
                     .bg(Color::LightGreen)
