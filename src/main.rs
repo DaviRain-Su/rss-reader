@@ -17,8 +17,8 @@ pub mod preprocess;
 pub use config::Config;
 pub mod command;
 pub use command::ApplicationArguments;
-pub mod ui;
 pub mod cache;
+pub mod ui;
 
 use crate::{db::GLOBAL_DATA, preprocess::process};
 

@@ -16,7 +16,7 @@ impl TitleAndRssUrl {
     fn title(&self) -> &str {
         &self.title
     }
-    
+
     fn rss_url(&self) -> &str {
         &self.rss_url
     }
@@ -58,12 +58,8 @@ impl Config {
         if let Some(outline) = self.body().outlines.get(index) {
             for (idx, item) in outline.outlines.iter().enumerate() {
                 let value = TitleAndRssUrl {
-                    title: format!(
-                        "🎈{}: {}",
-                        idx,
-                        item.title.clone().unwrap_or_default()
-                    ),
-                    rss_url: format!("{}", item.xml_url.clone().unwrap_or_default())
+                    title: format!("🎈{}: {}", idx, item.title.clone().unwrap_or_default()),
+                    rss_url: format!("{}", item.xml_url.clone().unwrap_or_default()),
                 };
                 result.push(value);
             }
