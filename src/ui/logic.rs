@@ -7,6 +7,7 @@ pub fn get_titles(url: &str) -> anyhow::Result<Vec<String>> {
     let response = reqwest::blocking::get(url)?.bytes()?;
 
     let channel = Channel::read_from(&response[..])?;
+    println!("channel: {:#?}", channel);
 
     process(channel, &GLOBAL_DATA)?;
 
@@ -17,4 +18,10 @@ pub fn get_titles(url: &str) -> anyhow::Result<Vec<String>> {
     let rss_titles = tep.get_rss_titles(author_address)?;
 
     Ok(rss_titles)
+}
+
+#[test]
+fn test_get_titles() {
+    let titles = get_titles("https://guoyu.submirror.xyz").unwrap();
+    println!("{:#?}", titles);
 }

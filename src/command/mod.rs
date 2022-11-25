@@ -32,8 +32,8 @@ fn parse_url(s: &str) -> Result<Url> {
 }
 
 impl SubscribeRss {
-    // parse rss url 
-    // save rss data to databse 
+    // parse rss url
+    // save rss data to databse
     // save rss url to opml file
 }
 /// Rss Reader app

@@ -7,7 +7,7 @@ use tui::{
     Frame,
 };
 
-use super::{app::App, DEFAULT_TIEL, logic::get_titles};
+use super::{app::App, logic::get_titles, DEFAULT_TIEL};
 
 pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let size = f.size();
@@ -118,6 +118,6 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
 
     //         // We can now render the item list
     //         f.render_stateful_widget(items, chunks[1], &mut app.items[n].state_mut());
-    //     }    
+    //     }
     // }
 }

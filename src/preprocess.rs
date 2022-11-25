@@ -40,7 +40,7 @@ pub fn process(channel: Channel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<()> {
 
     let mut db = db.lock().unwrap();
 
-    // save data to DB
+    // save data to DB need relplace by database
     db.save(rss_channel)?;
 
     Ok(())

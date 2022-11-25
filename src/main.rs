@@ -20,12 +20,10 @@ async fn main() -> anyhow::Result<()> {
     let opt = ApplicationArguments::from_args();
     match opt.command {
         command::Command::RunApp => {
-            // spawn 2 thread run logic 
+            // spawn 2 thread run logic
             // first is load data
             // second run ui
-            let task = tokio::spawn(async move {
-                ui::run_ui(&document) 
-            });
+            let task = tokio::spawn(async move { ui::run_ui(&document) });
 
             match task.await.unwrap() {
                 Ok(_) => println!("SUCCESS!"),

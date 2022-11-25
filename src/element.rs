@@ -39,6 +39,33 @@ pub struct Articles {
     pub articles: Vec<Article>,
 }
 
+impl Articles {
+    pub fn with_channel_title(mut self, channel_title: String) -> Self {
+        self.channel_title = channel_title;
+        self
+    }
+
+    pub fn with_channel_link(mut self, channel_link: String) -> Self {
+        self.channel_link = channel_link;
+        self
+    }
+
+    pub fn with_description(mut self, description: String) -> Self {
+        self.description = description;
+        self
+    }
+
+    pub fn with_image(mut self, image: Option<RssImage>) -> Self {
+        self.image = image;
+        self
+    }
+
+    pub fn with_articles(mut self, articles: Vec<Article>) -> Self {
+        self.articles = articles;
+        self
+    }
+}
+
 impl Default for Articles {
     fn default() -> Self {
         Self {
@@ -108,11 +135,11 @@ impl Display for Section {
 
 impl RssChannel {
     pub fn process_rss_channel_to_article(&self) -> anyhow::Result<Articles> {
-        let mut articles = Articles::default();
-        articles.channel_title = self.channel_title.clone();
-        articles.channel_link = self.channel_link.clone();
-        articles.description = self.description.clone();
-        articles.image = self.image.clone();
+        let mut articles = Articles::default()
+            .with_channel_title(self.channel_title.clone())
+            .with_channel_link(self.channel_link.clone())
+            .with_description(self.description.clone())
+            .with_image(self.image.clone());
 
         let mut item_articles = vec![];
 
@@ -128,7 +155,7 @@ impl RssChannel {
                 .query_selector("title")
                 .and_then(|mut iter| iter.next())
                 .ok_or(anyhow::anyhow!("unknown title"))?;
-                
+
             let node = handle.get(dom.parser()).unwrap();
 
             let article_title = node.inner_text(dom.parser());

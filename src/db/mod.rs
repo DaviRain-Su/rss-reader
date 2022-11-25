@@ -7,6 +7,11 @@ use crate::{
     utils::get_author_address_or_name,
 };
 
+pub mod nosql_database;
+pub mod sql_database;
+pub mod titles;
+pub mod utils;
+
 pub static GLOBAL_DATA: Lazy<Mutex<Db>> = Lazy::new(|| Mutex::new(Db::default()));
 
 #[derive(Debug)]
@@ -29,7 +34,7 @@ impl Default for Db {
 }
 
 impl Db {
-    pub  fn save(&mut self, rss_channel: RssChannel) -> anyhow::Result<()> {
+    pub fn save(&mut self, rss_channel: RssChannel) -> anyhow::Result<()> {
         let mirror_url = rss_channel.channel_link.clone();
         let mirror_address = get_author_address_or_name(&mirror_url);
 
