@@ -5,8 +5,6 @@ use structopt::StructOpt;
 /// Rss Reader Command
 #[derive(Debug, StructOpt)]
 pub enum Command {
-    /// init rss reader app
-    Init,
     /// run rss reader app
     #[structopt(name = "run-app")]
     RunApp,
