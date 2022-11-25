@@ -12,7 +12,8 @@ pub mod cache;
 pub mod ui;
 pub mod utils;
 
-fn main() -> anyhow::Result<()> {
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
     let default_config = include_str!("../.rss/RAW.opml");
     let document = Config::from_str(default_config)?;
 
@@ -25,7 +26,17 @@ fn main() -> anyhow::Result<()> {
             println!("init rss reader");
         },
         command::Command::RunApp => {
-            ui::run_ui(&document)?;
+            // spawn 2 thread run logic 
+            // first is load data
+            // second run ui
+            let task = tokio::spawn(async move {
+                ui::run_ui(&document) 
+            });
+
+            match task.await.unwrap() {
+                Ok(_) => println!("SUCCESS!"),
+                Err(e) => println!("{:?}", e),
+            }
         }
         command::Command::Subscribe(_) => println!("subscribe"),
         command::Command::Category => {
