@@ -11,6 +11,7 @@ pub mod nosql_database;
 pub mod sql_database;
 pub mod titles;
 pub mod utils;
+pub mod preprocess;
 
 pub static GLOBAL_DATA: Lazy<Mutex<Db>> = Lazy::new(|| Mutex::new(Db::default()));
 

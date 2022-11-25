@@ -1,6 +1,6 @@
 use rss::Channel;
 
-use crate::{db::GLOBAL_DATA, preprocess::process, utils::get_author_address_or_name};
+use crate::{db::{GLOBAL_DATA, preprocess::process}, utils::get_author_address_or_name};
 
 /// get Titles
 pub fn get_titles(url: &str) -> anyhow::Result<Vec<String>> {

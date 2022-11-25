@@ -4,7 +4,6 @@ use structopt::StructOpt;
 pub mod config;
 pub mod db;
 pub mod element;
-pub mod preprocess;
 pub use config::Config;
 pub mod command;
 pub use command::ApplicationArguments;
