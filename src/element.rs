@@ -5,15 +5,16 @@ use std::fmt::{self, Display};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RssChannel {
     pub channel_title: String,
-    pub channel_link: String,
+    pub channel_html_url: String,
+    pub channel_xml_url: String,
     pub description: String,
     pub image: Option<RssImage>,
     pub items: Vec<RssItem>,
 }
 
 impl RssChannel {
-    pub fn rss_url(&self) -> &str {
-        &self.channel_link
+    pub fn channel_html_url(&self) -> &str {
+        &self.channel_html_url
     }
 }
 
@@ -33,7 +34,8 @@ pub struct RssItem {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Articles {
     pub channel_title: String,
-    pub channel_link: String,
+    pub channel_html_url: String,
+    pub channel_xml_url: String,
     pub description: String,
     pub image: Option<RssImage>,
     pub articles: Vec<Article>,
@@ -45,8 +47,13 @@ impl Articles {
         self
     }
 
-    pub fn with_channel_link(mut self, channel_link: String) -> Self {
-        self.channel_link = channel_link;
+    pub fn with_channel_html_url(mut self, channel_html_url: String) -> Self {
+        self.channel_html_url = channel_html_url;
+        self
+    }
+
+    pub fn with_chanenl_xml_url(mut self, channel_xml_url: String) -> Self {
+        self.channel_xml_url = channel_xml_url;
         self
     }
 
@@ -70,7 +77,8 @@ impl Default for Articles {
     fn default() -> Self {
         Self {
             channel_title: Default::default(),
-            channel_link: Default::default(),
+            channel_html_url: Default::default(),
+            channel_xml_url: Default::default(),
             description: Default::default(),
             image: None,
             articles: vec![],
@@ -81,7 +89,8 @@ impl Default for Articles {
 impl Display for Articles {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.channel_title.green())?;
-        write!(f, "{}", self.channel_link.green())?;
+        write!(f, "{}", self.channel_html_url.green())?;
+        write!(f, "{}", self.channel_xml_url.green())?;
         write!(f, "{}", self.description.black())?;
         for article in self.articles.iter() {
             write!(f, "{}", article)?;
@@ -137,7 +146,8 @@ impl RssChannel {
     pub fn process_rss_channel_to_article(&self) -> anyhow::Result<Articles> {
         let mut articles = Articles::default()
             .with_channel_title(self.channel_title.clone())
-            .with_channel_link(self.channel_link.clone())
+            .with_channel_html_url(self.channel_html_url.clone())
+            .with_chanenl_xml_url(self.channel_xml_url.clone())
             .with_description(self.description.clone())
             .with_image(self.image.clone());
 

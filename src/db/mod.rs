@@ -4,7 +4,7 @@ use std::sync::Mutex;
 
 use crate::{
     element::{Articles, RssChannel},
-    utils::get_author_address_or_name,
+    utils::{get_author_address_or_name, generate_mirror_url},
 };
 
 pub mod nosql_database;
@@ -36,18 +36,17 @@ impl Default for Db {
 
 impl Db {
     pub fn save(&mut self, rss_channel: RssChannel) -> anyhow::Result<()> {
-        let mirror_url = rss_channel.channel_link.clone();
-        let mirror_address = get_author_address_or_name(&mirror_url);
+        let xml_url = rss_channel.channel_xml_url.clone();
 
         // save rss_channels
         // key: articles address
         self.rss_channels
-            .insert(mirror_address.to_string().clone(), rss_channel.clone());
+            .insert(xml_url.to_string().clone(), rss_channel.clone());
 
         // save artivles
         let temp_articles = rss_channel.process_rss_channel_to_article()?;
         self.articles
-            .insert(mirror_address.to_string().clone(), temp_articles);
+            .insert(xml_url.to_string().clone(), temp_articles);
 
         Ok(())
     }

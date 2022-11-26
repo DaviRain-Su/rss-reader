@@ -1,16 +1,17 @@
 use once_cell::sync::Lazy;
-use rss::Channel;
+// use rss::Channel;
 use std::sync::Mutex;
 
 use crate::db::Db;
 use crate::element::{RssChannel, RssImage, RssItem};
+use crate::ui::logic::XmlChannel;
 
-pub fn process(channel: Channel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<()> {
-    let channel_title = channel.title.clone();
-    let channel_link = channel.link.clone();
-    let channel_description = channel.description.clone();
+pub fn process(xml_channel: XmlChannel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<()> {
+    let channel_title = xml_channel.channel.title.clone();
+    let channel_html_url = xml_channel.channel.link.clone();
+    let channel_description = xml_channel.channel.description.clone();
 
-    let rss_image = if let Some(image) = channel.image.clone() {
+    let rss_image = if let Some(image) = xml_channel.channel.image.clone() {
         Some(RssImage {
             image_name: image.title.clone(),
             image_url: image.url.clone(),
@@ -19,7 +20,7 @@ pub fn process(channel: Channel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<()> {
         None
     };
 
-    let items = channel
+    let items = xml_channel.channel
         .items
         .clone()
         .into_iter()
@@ -32,10 +33,11 @@ pub fn process(channel: Channel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<()> {
 
     let rss_channel = RssChannel {
         channel_title,
-        channel_link,
+        channel_html_url,
         description: channel_description,
         image: rss_image,
         items,
+        channel_xml_url: xml_channel.xmlurl.clone(),
     };
 
     let mut db = db.lock().unwrap();
