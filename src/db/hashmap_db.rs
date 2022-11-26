@@ -2,7 +2,7 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
-use crate::element::{Articles, RssChannel, Article};
+use crate::element::{Article, Articles, RssChannel};
 
 use super::{titles::Titles, DatabaseKeeper, DatabaseReader};
 
@@ -88,15 +88,15 @@ impl HashMapDb {
 
     fn article(&self, xmlurl: &str, title: &str) -> anyhow::Result<Option<&Article>> {
         let mut titles = self
-        .articles
-        .get(xmlurl)
-        .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
-        .articles
-        .iter()
-        .filter(|value| value.title == title);
-     
+            .articles
+            .get(xmlurl)
+            .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
+            .articles
+            .iter()
+            .filter(|value| value.title == title);
+
         let article = titles.next();
-        
+
         Ok(article)
     }
 }

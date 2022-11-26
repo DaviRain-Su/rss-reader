@@ -6,7 +6,10 @@ pub struct XmlChannel {
     pub channel: Channel,
 }
 
-use crate::{db::{preprocess::process, titles::Titles, DatabaseReader, hashmap_db::GLOBAL_DATA}, element::Article};
+use crate::{
+    db::{hashmap_db::GLOBAL_DATA, preprocess::process, titles::Titles, DatabaseReader},
+    element::Article,
+};
 
 /// get Titles
 pub fn get_titles(url: &str) -> anyhow::Result<Titles> {
@@ -33,7 +36,6 @@ pub fn run(url: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
-
 pub fn get_article(url: &str, title: &str) -> anyhow::Result<Option<Article>> {
     let tep = GLOBAL_DATA.lock().unwrap();
 
@@ -49,6 +51,8 @@ fn test_get_titles() {
     let titles = get_titles("https://guoyu.submirror.xyz").unwrap();
     println!("{:#?}", titles);
 
-    let article = get_article("https://guoyu.submirror.xyz", "永不消逝的哈希 — 郭宇").unwrap().unwrap();
+    let article = get_article("https://guoyu.submirror.xyz", "永不消逝的哈希 — 郭宇")
+        .unwrap()
+        .unwrap();
     println!("{}", article);
 }

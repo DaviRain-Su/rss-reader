@@ -1,13 +1,14 @@
-use crate::element::{RssChannel, Article};
+use crate::element::{Article, RssChannel};
 
 use self::titles::Titles;
 
+pub mod hashmap_db;
 pub mod nosql_database;
 pub mod preprocess;
 pub mod sql_database;
+pub mod sqlite_db;
 pub mod titles;
 pub mod utils;
-pub mod hashmap_db;
 
 pub trait DatabaseKeeper {
     type Error;
