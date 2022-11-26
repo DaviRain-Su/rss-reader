@@ -17,7 +17,6 @@ async fn main() -> anyhow::Result<()> {
     let document = Config::from_str(default_config)?;
     println!("ducument: {:#?}", document);
 
-
     let opt = ApplicationArguments::from_args();
     match opt.command {
         command::Command::Init => {

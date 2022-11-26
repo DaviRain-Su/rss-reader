@@ -25,7 +25,10 @@ impl DatabaseReader for SqliteDb {
         get_htmlurl(xmlurl)
     }
 
-    async fn get_articles_titles(&self, xmlurl: &str) -> Result<super::titles::Titles, Self::Error> {
+    async fn get_articles_titles(
+        &self,
+        xmlurl: &str,
+    ) -> Result<super::titles::Titles, Self::Error> {
         get_article_titles(xmlurl)
     }
 
@@ -52,7 +55,6 @@ impl DatabaseKeeper for SqliteDb {
         &mut self,
         rss_channel: crate::element::RssChannel,
     ) -> Result<(), Self::Error> {
-    
         match sql_database::create_rss_database() {
             Ok(_) => println!("Create database successful!"),
             Err(e) => println!("{:?}", e),
@@ -62,8 +64,7 @@ impl DatabaseKeeper for SqliteDb {
         let description = rss_channel.description.clone();
         let htmlurl = rss_channel.channel_html_url.clone();
         let xmlurl = rss_channel.channel_xml_url.clone();
-        let titles = rss_channel.process_rss_channel_to_article().await?
-            .titles();
+        let titles = rss_channel.process_rss_channel_to_article().await?.titles();
 
         sql_database::insert(title, description, htmlurl, xmlurl, titles)
     }
@@ -72,9 +73,10 @@ impl DatabaseKeeper for SqliteDb {
         &mut self,
         rss_channel: crate::element::RssChannel,
     ) -> Result<(), Self::Error> {
-    
         let xmlurl = rss_channel.channel_xml_url.clone();
-        let articles = rss_channel.process_rss_channel_to_article().await?
+        let articles = rss_channel
+            .process_rss_channel_to_article()
+            .await?
             .articles();
 
         for item in articles.iter() {

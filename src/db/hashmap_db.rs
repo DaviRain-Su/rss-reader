@@ -1,7 +1,7 @@
+use async_trait::async_trait;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
-use async_trait::async_trait;
 
 use crate::element::{Article, Articles, RssChannel};
 

@@ -4,7 +4,9 @@ use crate::ui::logic::XmlChannel;
 use super::{DatabaseKeeper, DatabaseReader};
 
 pub async fn process<
-    Databae: DatabaseReader<Error = anyhow::Error> + DatabaseKeeper<Error = anyhow::Error> + std::marker::Send,
+    Databae: DatabaseReader<Error = anyhow::Error>
+        + DatabaseKeeper<Error = anyhow::Error>
+        + std::marker::Send,
 >(
     xml_channel: XmlChannel,
     databse: &mut Databae,

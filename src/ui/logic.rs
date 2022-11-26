@@ -1,7 +1,4 @@
-use std::sync::Arc;
-
 use rss::Channel;
-use tokio::runtime::Runtime;
 
 #[derive(Debug)]
 pub struct XmlChannel {
@@ -59,7 +56,8 @@ async fn test_get_titles() {
     let titles = get_titles("https://guoyu.submirror.xyz").await.unwrap();
     println!("{:#?}", titles);
 
-    let article = get_article("https://guoyu.submirror.xyz", "永不消逝的哈希 — 郭宇").await
+    let article = get_article("https://guoyu.submirror.xyz", "永不消逝的哈希 — 郭宇")
+        .await
         .unwrap()
         .unwrap();
     println!("{}", article);

@@ -11,7 +11,6 @@ pub mod sqlite_db;
 pub mod titles;
 pub mod utils;
 
-
 #[async_trait]
 pub trait DatabaseKeeper {
     type Error;
