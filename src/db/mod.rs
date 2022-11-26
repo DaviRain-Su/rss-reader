@@ -2,7 +2,7 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
-use crate::element::{Articles, RssChannel};
+use crate::element::{Articles, RssChannel, Article};
 
 use self::titles::Titles;
 
@@ -37,6 +37,8 @@ pub trait DatabaseReader {
     fn get_html_url(&self, xmlurl: &str) -> Result<String, Self::Error>;
 
     fn get_articles_titles(&self, xmlurl: &str) -> Result<Titles, Self::Error>;
+
+    fn get_article(&self, xmlurl: &str, title: &str) -> Result<Option<&Article>, Self::Error>;
 }
 
 pub static GLOBAL_DATA: Lazy<Mutex<Db>> = Lazy::new(|| Mutex::new(Db::default()));
@@ -118,6 +120,20 @@ impl Db {
 
         Ok(result)
     }
+
+    fn article(&self, xmlurl: &str, title: &str) -> anyhow::Result<Option<&Article>> {
+        let mut titles = self
+        .articles
+        .get(xmlurl)
+        .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
+        .articles
+        .iter()
+        .filter(|value| value.title == title);
+     
+        let article = titles.next();
+        
+        Ok(article)
+    }
 }
 
 impl DatabaseKeeper for Db {
@@ -149,5 +165,9 @@ impl DatabaseReader for Db {
 
     fn get_articles_titles(&self, xmlurl: &str) -> Result<Titles, Self::Error> {
         self.rss_titles(xmlurl)
+    }
+
+    fn get_article(&self, xmlurl: &str, title: &str) -> Result<Option<&Article>, Self::Error> {
+        self.article(xmlurl, title)
     }
 }
