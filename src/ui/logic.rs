@@ -6,7 +6,7 @@ pub struct XmlChannel {
     pub channel: Channel,
 }
 
-use crate::{db::{preprocess::process, titles::Titles, DatabaseReader, GLOBAL_DATA}, element::Article};
+use crate::{db::{preprocess::process, titles::Titles, DatabaseReader, hashmap_db::GLOBAL_DATA}, element::Article};
 
 /// get Titles
 pub fn get_titles(url: &str) -> anyhow::Result<Titles> {
@@ -28,7 +28,7 @@ pub fn run(url: &str) -> anyhow::Result<()> {
         channel,
     };
 
-    process(xml_channel, &GLOBAL_DATA)?;
+    process(xml_channel)?;
 
     Ok(())
 }
@@ -45,7 +45,7 @@ pub fn get_article(url: &str, title: &str) -> anyhow::Result<Option<Article>> {
 #[test]
 // #[ignore]
 fn test_get_titles() {
-    let ret = run("https://guoyu.submirror.xyz").unwrap();
+    let _ = run("https://guoyu.submirror.xyz").unwrap();
     let titles = get_titles("https://guoyu.submirror.xyz").unwrap();
     println!("{:#?}", titles);
 
