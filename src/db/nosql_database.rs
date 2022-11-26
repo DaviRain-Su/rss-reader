@@ -33,7 +33,7 @@ fn test_no_sql() {
         source.as_ref()
     }
 
-    let r = insert("k1", b"v1111").unwrap();
+    let _ = insert("k1", b"v1111").unwrap();
 
     let ret = get("k1").unwrap();
     println!("{:?}", ret);

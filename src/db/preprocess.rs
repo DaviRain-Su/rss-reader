@@ -1,9 +1,14 @@
 use crate::element::{RssChannel, RssImage, RssItem};
 use crate::ui::logic::XmlChannel;
 
-use super::hashmap_db::GLOBAL_DATA;
+use super::{DatabaseKeeper, DatabaseReader};
 
-pub fn process(xml_channel: XmlChannel) -> anyhow::Result<()> {
+pub fn process<
+    Databae: DatabaseReader<Error = anyhow::Error> + DatabaseKeeper<Error = anyhow::Error>,
+>(
+    xml_channel: XmlChannel,
+    databse: &mut Databae,
+) -> anyhow::Result<()> {
     let channel_title = xml_channel.channel.title.clone();
     let channel_html_url = xml_channel.channel.link.clone();
     let channel_description = xml_channel.channel.description.clone();
@@ -38,10 +43,8 @@ pub fn process(xml_channel: XmlChannel) -> anyhow::Result<()> {
         channel_xml_url: xml_channel.xmlurl.clone(),
     };
 
-    let mut db = GLOBAL_DATA.lock().unwrap();
-
     // save data to DB need relplace by database
-    db.save(rss_channel)?;
+    databse.save(rss_channel)?;
 
     Ok(())
 }

@@ -7,6 +7,7 @@ use crate::element::{Article, Articles, RssChannel};
 use super::{titles::Titles, DatabaseKeeper, DatabaseReader};
 
 pub static GLOBAL_DATA: Lazy<Mutex<HashMapDb>> = Lazy::new(|| Mutex::new(HashMapDb::default()));
+
 #[derive(Debug)]
 pub struct HashMapDb {
     /// key xml url
@@ -86,7 +87,7 @@ impl HashMapDb {
         Ok(result)
     }
 
-    fn article(&self, xmlurl: &str, title: &str) -> anyhow::Result<Option<&Article>> {
+    fn article(&self, xmlurl: &str, title: &str) -> anyhow::Result<Option<Article>> {
         let mut titles = self
             .articles
             .get(xmlurl)
@@ -97,7 +98,7 @@ impl HashMapDb {
 
         let article = titles.next();
 
-        Ok(article)
+        Ok(article.cloned())
     }
 }
 
@@ -132,7 +133,7 @@ impl DatabaseReader for HashMapDb {
         self.rss_titles(xmlurl)
     }
 
-    fn get_article(&self, xmlurl: &str, title: &str) -> Result<Option<&Article>, Self::Error> {
+    fn get_article(&self, xmlurl: &str, title: &str) -> Result<Option<Article>, Self::Error> {
         self.article(xmlurl, title)
     }
 }

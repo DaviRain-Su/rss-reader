@@ -2,6 +2,8 @@ use colored::*;
 use serde::{Deserialize, Serialize};
 use std::fmt::{self, Display};
 
+use crate::db::titles::Titles;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RssChannel {
     pub channel_title: String,
@@ -70,6 +72,20 @@ impl Articles {
     pub fn with_articles(mut self, articles: Vec<Article>) -> Self {
         self.articles = articles;
         self
+    }
+
+    pub fn articles(&self) -> Vec<Article> {
+        self.articles.clone()
+    }
+
+    pub fn titles(&self) -> Titles {
+        let titles = self
+            .articles
+            .iter()
+            .map(|value| value.title.clone())
+            .collect::<Vec<_>>();
+
+        Titles { titles }
     }
 }
 

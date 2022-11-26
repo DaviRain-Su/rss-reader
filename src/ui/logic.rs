@@ -7,15 +7,15 @@ pub struct XmlChannel {
 }
 
 use crate::{
-    db::{hashmap_db::GLOBAL_DATA, preprocess::process, titles::Titles, DatabaseReader},
+    db::{preprocess::process, sqlite_db::SqliteDb, titles::Titles, DatabaseReader},
     element::Article,
 };
 
 /// get Titles
 pub fn get_titles(url: &str) -> anyhow::Result<Titles> {
-    let tep = GLOBAL_DATA.lock().unwrap();
+    let sqlite_db = SqliteDb;
 
-    let rss_titles = tep.get_articles_titles(url)?;
+    let rss_titles = sqlite_db.get_articles_titles(url)?;
 
     Ok(rss_titles)
 }
@@ -31,17 +31,20 @@ pub fn run(url: &str) -> anyhow::Result<()> {
         channel,
     };
 
-    process(xml_channel)?;
+    let mut sqlite_db = SqliteDb;
+
+    process(xml_channel, &mut sqlite_db)?;
 
     Ok(())
 }
 
+/// run get article
 pub fn get_article(url: &str, title: &str) -> anyhow::Result<Option<Article>> {
-    let tep = GLOBAL_DATA.lock().unwrap();
+    let sqlite_db = SqliteDb;
 
-    let rss_titles = tep.get_article(url, title)?;
+    let rss_titles = sqlite_db.get_article(url, title)?;
 
-    Ok(rss_titles.cloned())
+    Ok(rss_titles)
 }
 
 #[test]

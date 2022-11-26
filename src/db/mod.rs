@@ -36,5 +36,5 @@ pub trait DatabaseReader {
 
     fn get_articles_titles(&self, xmlurl: &str) -> Result<Titles, Self::Error>;
 
-    fn get_article(&self, xmlurl: &str, title: &str) -> Result<Option<&Article>, Self::Error>;
+    fn get_article(&self, xmlurl: &str, title: &str) -> Result<Option<Article>, Self::Error>;
 }

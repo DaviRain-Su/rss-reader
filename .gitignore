@@ -2,3 +2,5 @@
 /target/
 /Cargo.lock
 .rss_reader
+.DS_Store
+rss.db
