@@ -18,9 +18,31 @@ async fn main() -> anyhow::Result<()> {
 
     let opt = ApplicationArguments::from_args();
     match opt.command {
+        command::Command::Init => {
+            // first is load data
+            let document1 = document.clone();
+
+            let load_database_task = tokio::spawn(async move {
+                let category_len = document1.category_len();
+                for idx in 0..category_len {
+                    for item in document1.outlines(idx) {
+                        let rss_url = item.rss_url.clone();
+                        match ui::logic::run(&rss_url).await {
+                            Ok(_) => println!("Run logic successful!"),
+                            Err(err) => println!("{:?}", err),
+                        }
+                    }
+                }
+            });
+
+            match load_database_task.await {
+                Ok(_) => println!("SUCCESS!"),
+                Err(e) => println!("Esixt failed{:?}", e),
+            }
+        }
         command::Command::RunApp => {
             // spawn 2 thread run logic
-            // first is load data
+
             // second run ui
             let task = tokio::spawn(async move { ui::run_ui(&document) });
 

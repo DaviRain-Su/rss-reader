@@ -8,7 +8,7 @@ pub struct Titles {
 impl Default for Titles {
     fn default() -> Self {
         Self {
-            titles: vec!["1".into(), "2".into(), "3".into()],
+            titles: vec!["default title".into()],
         }
     }
 }

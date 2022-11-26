@@ -3,11 +3,13 @@ use tui::{
     layout::{Alignment, Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
-    widgets::{Block, Borders, List, ListItem, Tabs},
+    widgets::{Block, Borders, List, ListItem, Paragraph, Tabs, Wrap},
     Frame,
 };
 
-use super::{app::App, DEFAULT_TIEL};
+use crate::{config::TitleAndRssUrl, db::titles::Titles};
+
+use super::{app::App, logic::get_titles, DEFAULT_TIEL};
 
 pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let size = f.size();
@@ -81,43 +83,66 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
 
         // We can now render the item list
         f.render_stateful_widget(items.clone(), chunks[0], &mut app.items[n].state_mut());
-        f.render_stateful_widget(items, chunks[1], &mut app.items[n].state_mut());
+        // f.render_stateful_widget(items, chunks[1], &mut app.items[n].state_mut());
     }
-    // // display rss_url content
+    // display rss_url content
     // if let Some(value) = app.items.get(n) {
     //     // display title
     //     let items = value
     //         .items()
     //         .iter()
     //         .map(|i| {
-    //             let rss_url = i.0.rss_url.clone();
-    //             rss_url
+    //             // let rss_url = i.0.rss_url.clone();
+    //             // rss_url
+    //             i.0.clone()
     //         })
-    //         .collect::<Vec<String>>();
+    //         .collect::<Vec<TitleAndRssUrl>>();
 
-    //     for item in items.iter() {
-    //         let titles = get_titles(item).unwrap_or(vec!["unknow 404".into()]).into_iter().map(|item| {
-    //             let lines = vec![Spans::from(item)];
-    //             ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
-    //         }).collect::<Vec<ListItem>>();
+        // for item in items.iter() {
+        //     let rss_title = item.title.clone();
+        //     let rss_url = item.rss_url.clone();
 
-    //         // Create a List from all list items and highlight the currently selected one
-    //         let items = List::new(titles)
-    //             .block(
-    //                 Block::default()
-    //                     .borders(Borders::ALL)
-    //                     .title(title)
-    //                     .title_alignment(Alignment::Center),
-    //             )
-    //             .highlight_style(
-    //                 Style::default()
-    //                     .bg(Color::LightGreen)
-    //                     .add_modifier(Modifier::BOLD),
-    //             )
-    //             .highlight_symbol(">> ");
+        //     let titles = get_titles(&rss_url)
+        //         .unwrap_or(Titles::default())
+        //         .titles
+        //         .into_iter()
+        //         .map(|item| {
+        //             let lines = vec![Spans::from(item)];
+        //             ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
+        //         })
+        //         .collect::<Vec<ListItem>>();
 
-    //         // We can now render the item list
-    //         f.render_stateful_widget(items, chunks[1], &mut app.items[n].state_mut());
-    //     }
+        //     // Create a List from all list items and highlight the currently selected one
+        //     let items = List::new(titles)
+        //         .block(
+        //             Block::default()
+        //                 .borders(Borders::ALL)
+        //                 .title("default")
+        //                 .title_alignment(Alignment::Center),
+        //         )
+        //         .highlight_style(
+        //             Style::default()
+        //                 .bg(Color::LightGreen)
+        //                 .add_modifier(Modifier::BOLD),
+        //         )
+        //         .highlight_symbol(">> ");
+
+            // let text = vec![
+            //     Spans::from(vec![
+            //         Span::raw("First"),
+            //         Span::styled("line", Style::default().add_modifier(Modifier::ITALIC)),
+            //         Span::raw("."),
+            //     ]),
+            //     Spans::from(Span::styled("Second line", Style::default().fg(Color::Red))),
+            // ];
+            // let items = Paragraph::new(text)
+            //     .block(Block::default().title(title).borders(Borders::ALL))
+            //     .style(Style::default().fg(Color::White).bg(Color::Black))
+            //     .alignment(Alignment::Center)
+            //     .wrap(Wrap { trim: true });
+
+            // We can now render the item list
+            // f.render_stateful_widget(items.clone(), chunks[1], &mut app.items[n].state_mut());
+        // }
     // }
 }

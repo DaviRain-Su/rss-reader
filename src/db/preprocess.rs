@@ -3,8 +3,8 @@ use crate::ui::logic::XmlChannel;
 
 use super::{DatabaseKeeper, DatabaseReader};
 
-pub fn process<
-    Databae: DatabaseReader<Error = anyhow::Error> + DatabaseKeeper<Error = anyhow::Error>,
+pub async fn process<
+    Databae: DatabaseReader<Error = anyhow::Error> + DatabaseKeeper<Error = anyhow::Error> + std::marker::Send,
 >(
     xml_channel: XmlChannel,
     databse: &mut Databae,
@@ -44,7 +44,7 @@ pub fn process<
     };
 
     // save data to DB need relplace by database
-    databse.save(rss_channel)?;
+    databse.save(rss_channel).await?;
 
     Ok(())
 }

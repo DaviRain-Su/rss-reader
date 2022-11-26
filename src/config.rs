@@ -23,6 +23,7 @@ impl TitleAndRssUrl {
 }
 
 impl Config {
+    /// construct config
     pub fn from_str(file: &str) -> Result<Self, anyhow::Error> {
         let document = OPML::from_str(file)?;
         Ok(Self {
@@ -30,6 +31,7 @@ impl Config {
         })
     }
 
+    /// get rss source file
     pub fn rss_source_file(&self) -> &OPML {
         &self.rss_source_file
     }
@@ -38,10 +40,12 @@ impl Config {
         &self.rss_source_file.body
     }
 
+    /// category length
     pub fn category_len(&self) -> usize {
         self.rss_source_file.body.outlines.len()
     }
 
+    /// get all category
     pub fn category(&self) -> Vec<String> {
         let result = self
             .body()

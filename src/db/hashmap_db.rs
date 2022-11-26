@@ -1,6 +1,7 @@
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
+use async_trait::async_trait;
 
 use crate::element::{Article, Articles, RssChannel};
 
@@ -24,11 +25,11 @@ impl Default for HashMapDb {
 }
 
 impl HashMapDb {
-    pub fn save(&mut self, rss_channel: RssChannel) -> anyhow::Result<()> {
+    pub async fn save(&mut self, rss_channel: RssChannel) -> anyhow::Result<()> {
         let xml_url = rss_channel.channel_xml_url.clone();
 
         // save artivles
-        let temp_articles = rss_channel.process_rss_channel_to_article()?;
+        let temp_articles = rss_channel.process_rss_channel_to_article().await?;
         self.articles
             .insert(xml_url.to_string().clone(), temp_articles);
 
@@ -102,38 +103,40 @@ impl HashMapDb {
     }
 }
 
+#[async_trait]
 impl DatabaseKeeper for HashMapDb {
     type Error = anyhow::Error;
 
-    fn save_rss_opml(&mut self, _rss_channel: RssChannel) -> Result<(), Self::Error> {
+    async fn save_rss_opml(&mut self, _rss_channel: RssChannel) -> Result<(), Self::Error> {
         Ok(())
     }
 
-    fn save_articles(&mut self, rss_channel: RssChannel) -> Result<(), Self::Error> {
-        self.save(rss_channel)
+    async fn save_articles(&mut self, rss_channel: RssChannel) -> Result<(), Self::Error> {
+        self.save(rss_channel).await
     }
 }
 
+#[async_trait]
 impl DatabaseReader for HashMapDb {
     type Error = anyhow::Error;
 
-    fn get_rss_title(&self, xmlurl: &str) -> Result<String, Self::Error> {
+    async fn get_rss_title(&self, xmlurl: &str) -> Result<String, Self::Error> {
         self.rss_title(xmlurl)
     }
 
-    fn get_description(&self, xmlurl: &str) -> Result<String, Self::Error> {
+    async fn get_description(&self, xmlurl: &str) -> Result<String, Self::Error> {
         self.description(xmlurl)
     }
 
-    fn get_html_url(&self, xmlurl: &str) -> Result<String, Self::Error> {
+    async fn get_html_url(&self, xmlurl: &str) -> Result<String, Self::Error> {
         self.html_url(xmlurl)
     }
 
-    fn get_articles_titles(&self, xmlurl: &str) -> Result<Titles, Self::Error> {
+    async fn get_articles_titles(&self, xmlurl: &str) -> Result<Titles, Self::Error> {
         self.rss_titles(xmlurl)
     }
 
-    fn get_article(&self, xmlurl: &str, title: &str) -> Result<Option<Article>, Self::Error> {
+    async fn get_article(&self, xmlurl: &str, title: &str) -> Result<Option<Article>, Self::Error> {
         self.article(xmlurl, title)
     }
 }
