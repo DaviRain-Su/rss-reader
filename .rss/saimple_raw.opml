@@ -5,21 +5,21 @@
 		<title>RAW.opml</title>
 	</head>
 <body>
-	<outline text="01. Media/Aggregator/Curator" title="02. Media/Aggregator/Curator">
+	<outline text="01. Media/Aggregator/Curator" title="01. Media/Aggregator/Curator">
 		<outline text="BlockTempo (Chinese)" title="BlockTempo (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://www.blocktempo.com/" xmlUrl="https://www.blocktempo.com/feed/"/>
 		<outline text="ChainFeeds Selected (Chinese)" title="ChainFeeds Selected (Chinese)" description="" type="rss" version="RSS" htmlUrl="" xmlUrl="https://www.chainfeeds.xyz/rss"/>
 		<outline text="ECN (Chinese)" title="ECN (Chinese)" description="" type="rss" version="RSS" htmlUrl="http://github.com/dylang/node-rss" xmlUrl="https://news.ethereum.cn/rss.xml"/>
-		<outline text="TechFlow (Chinese)" title="TechFlow (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://techflowpost.mirror.xyz/" xmlUrl="https://techflowpost.mirror.xyz/feed/atom"/>
+		<outline text="TechFlow (Chinese)" title="TechFlow (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://techflowpost.mirror.xyz/" xmlUrl="https://techflowpost.submirror.xyz"/>
 	</outline>
-	<outline text="02. Newsletter" title="03. Newsletter">
+	<outline text="02. Newsletter" title="02. Newsletter">
 		<outline text="0xSoros (Chinese)" title="0xSoros (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://0xsoros.substack.com/" xmlUrl="https://0xsoros.substack.com/feed"/>
 		<outline text="ChainBreaker (Chinese)" title="ChainBreaker (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://mirror.xyz/0xchainbreaker.eth/" xmlUrl="https://submirror.xyz/0xchainbreaker.eth"/>
-		<outline text="Orange Paper (Chinese)" title="Orange Paper (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://orangexyz.mirror.xyz/" xmlUrl="https://orangexyz.mirror.xyz/feed/atom"/>
+		<outline text="Orange Paper (Chinese)" title="Orange Paper (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://orangexyz.mirror.xyz/" xmlUrl="https://orangexyz.submirror.xyz"/>
 		<outline text="TechFlow (Chinese)" title="TechFlow (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://techflowpost.substack.com/" xmlUrl="https://techflowpost.substack.com/feed"/>
 	</outline>
-	<outline text="03. Research/VC" title="05. Research/VC">
+	<outline text="03. Research/VC" title="03. Research/VC">
 		<outline text="BTC Study (Chinese)" title="BTC Study (Chinese)" description="" type="rss" version="RSS" htmlUrl="" xmlUrl="https://www.btcstudy.org/atom.xml"/>
-		<outline text="Guoyu (Chinese)" title="Guoyu (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://guoyu.mirror.xyz/" xmlUrl="http://guoyu.mirror.xyz/feed/atom"/>
+		<outline text="Guoyu (Chinese)" title="Guoyu (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://guoyu.mirror.xyz/" xmlUrl="https://guoyu.submirror.xyz"/>
 		<outline text="Taipei Ethereum Meetup (Chinese)" title="Taipei Ethereum Meetup (Chinese)" description="" type="rss" version="RSS" htmlUrl="https://medium.com/taipei-ethereum-meetup?source=rss----756327875b4f---4" xmlUrl="https://medium.com/feed/taipei-ethereum-meetup"/>
 	</outline>
 </body>

@@ -3,7 +3,7 @@ use tui::{
     layout::{Alignment, Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
-    widgets::{Block, Borders, List, ListItem, Tabs},
+    widgets::{Block, Borders, List, ListItem, Tabs, Paragraph, Wrap},
     Frame,
 };
 
@@ -33,6 +33,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         })
         .collect();
 
+    // display tabs
     let tabs = Tabs::new(titles)
         .block(Block::default().borders(Borders::ALL).title("Tabs"))
         .select(app.index)
@@ -46,7 +47,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
 
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+        .constraints([Constraint::Percentage(25), Constraint::Percentage(75)].as_ref())
         .split(chunks[1]);
 
     let n = app.index;
@@ -86,62 +87,39 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     }
 
     // display rss_url content
-    if let Some(value) = app.items.get(n) {
-        // display title
-        let items = value
-            .items()
-            .iter()
-            .map(|i| i.0.clone())
-            .collect::<Vec<TitleAndRssUrl>>();
+    // if let Some(value) = app.items.get(n) {
+    //     // display title
+    //     let items = value
+    //         .items()
+    //         .iter()
+    //         .map(|i| i.0.clone())
+    //         .collect::<Vec<TitleAndRssUrl>>();
 
-        for item in items.iter() {
-            let rss_title = item.title.clone();
-            let rss_url = item.rss_url.clone();
+    //     for item in items.iter() {
+    //         let rss_title = item.title.clone();
+    //         let rss_url = item.rss_url.clone();
 
-            let titles = app.block_on(get_titles(&rss_url));
+    //         let titles = app.block_on(get_titles(&rss_url));
 
-            let titles = titles
-                .unwrap_or(Titles::default())
-                .titles
-                .into_iter()
-                .map(|item| {
-                    ListItem::new(item).style(Style::default().fg(Color::Black).bg(Color::White))
-                })
-                .collect::<Vec<ListItem>>();
+    //         let titles = titles
+    //             .unwrap_or(Titles::default())
+    //             .titles
+    //             .into_iter()
+    //             .map(|item| {
+    //                 // Spans::from(Span::styled(item, Style::default().fg(Color::Red)))
+    //                 Spans::from(item)
+    //             })
+    //             .collect::<Vec<Spans>>();
 
-            // Create a List from all list items and highlight the currently selected one
-            let items = List::new(titles)
-                .block(
-                    Block::default()
-                        .borders(Borders::ALL)
-                        .title(rss_title)
-                        .title_alignment(Alignment::Center),
-                )
-                .highlight_style(
-                    Style::default()
-                        .bg(Color::LightGreen)
-                        .add_modifier(Modifier::BOLD),
-                )
-                .highlight_symbol(">> ");
+    //         let items = Paragraph::new(titles)
+    //             .block(Block::default().title(rss_title).borders(Borders::ALL))
+    //             .style(Style::default().fg(Color::White).bg(Color::Black))
+    //             .alignment(Alignment::Center)
+    //             .wrap(Wrap { trim: true });
 
-            f.render_widget(items, chunks[1]);
-
-            // let text = vec![
-            //     Spans::from(vec![
-            //         Span::raw("First"),
-            //         Span::styled("line", Style::default().add_modifier(Modifier::ITALIC)),
-            //         Span::raw("."),
-            //     ]),
-            //     Spans::from(Span::styled("Second line", Style::default().fg(Color::Red))),
-            // ];
-            // let items = Paragraph::new(text)
-            //     .block(Block::default().title(title).borders(Borders::ALL))
-            //     .style(Style::default().fg(Color::White).bg(Color::Black))
-            //     .alignment(Alignment::Center)
-            //     .wrap(Wrap { trim: true });
-
-            // We can now render the item list
-            // f.render_stateful_widget(items.clone(), chunks[1], &mut app.items[n].state_mut());
-        }
-    }
+    //         // We can now render the item list
+    //         f.render_widget(items, chunks[1]);
+    //         // f.render_stateful_widget(items.clone(), chunks[1], &mut app.items[n].state_mut());
+    //     }
+    // }
 }
