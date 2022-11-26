@@ -17,6 +17,7 @@ use app::App;
 pub mod ui;
 use ui::ui;
 pub mod logic;
+pub mod modes;
 
 const DEFAULT_TIEL: &str = "Default title";
 
@@ -62,10 +63,16 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App<'_>) -> anyhow::
                 KeyCode::Right => app.next(),
                 KeyCode::Left => app.previous(),
                 KeyCode::Up => {
-                    app.items.get_mut(app.index).unwrap().previous();
+                    app.current_tab_items
+                        .get_mut(app.tabs_index)
+                        .unwrap()
+                        .previous();
                 }
                 KeyCode::Down => {
-                    app.items.get_mut(app.index).unwrap().next();
+                    app.current_tab_items
+                        .get_mut(app.tabs_index)
+                        .unwrap()
+                        .next();
                 }
                 _ => {}
             }

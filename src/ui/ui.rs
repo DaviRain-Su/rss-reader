@@ -3,7 +3,7 @@ use tui::{
     layout::{Alignment, Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
-    widgets::{Block, Borders, List, ListItem, Tabs, Paragraph, Wrap},
+    widgets::{Block, Borders, List, ListItem, Paragraph, Tabs, Wrap},
     Frame,
 };
 
@@ -22,7 +22,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     f.render_widget(block, size);
 
     let titles = app
-        .titles
+        .tabs_titles
         .iter()
         .map(|t| {
             let (first, rest) = t.split_at(1);
@@ -36,7 +36,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     // display tabs
     let tabs = Tabs::new(titles)
         .block(Block::default().borders(Borders::ALL).title("Tabs"))
-        .select(app.index)
+        .select(app.tabs_index)
         .style(Style::default().fg(Color::Cyan))
         .highlight_style(
             Style::default()
@@ -50,13 +50,13 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .constraints([Constraint::Percentage(25), Constraint::Percentage(75)].as_ref())
         .split(chunks[1]);
 
-    let n = app.index;
+    let n = app.tabs_index;
 
     // get title
-    let title = app.titles.get(n).unwrap_or(&DEFAULT_TIEL).clone();
+    let title = app.tabs_titles.get(n).unwrap_or(&DEFAULT_TIEL).clone();
 
     // Iterate through all elements in the `items` app and append some debug text to it.
-    if let Some(value) = app.items.get(n) {
+    if let Some(value) = app.current_tab_items.get(n) {
         // display title
         let items = value
             .items()
@@ -83,7 +83,11 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
             .highlight_symbol(">> ");
 
         // We can now render the item list
-        f.render_stateful_widget(items.clone(), chunks[0], &mut app.items[n].state_mut());
+        f.render_stateful_widget(
+            items.clone(),
+            chunks[0],
+            &mut app.current_tab_items[n].state_mut(),
+        );
     }
 
     // display rss_url content
