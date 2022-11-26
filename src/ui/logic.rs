@@ -6,11 +6,10 @@ pub struct XmlChannel {
     pub channel: Channel,
 }
 
-use crate::db::{preprocess::process, GLOBAL_DATA, DatabaseReader, titles::Titles};
+use crate::db::{preprocess::process, titles::Titles, DatabaseReader, GLOBAL_DATA};
 
 /// get Titles
 pub fn get_titles(url: &str) -> anyhow::Result<Titles> {
-  
     let tep = GLOBAL_DATA.lock().unwrap();
 
     let rss_titles = tep.get_articles_titles(url)?;

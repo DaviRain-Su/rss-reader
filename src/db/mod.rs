@@ -12,21 +12,17 @@ pub mod sql_database;
 pub mod titles;
 pub mod utils;
 
-
 pub trait DatabaseKeeper {
     type Error;
-    
+
     fn save(&mut self, rss_channel: RssChannel) -> Result<(), Self::Error> {
         self.save_rss_opml(rss_channel.clone())?;
         self.save_articles(rss_channel)
     }
 
-
     fn save_rss_opml(&mut self, rss_channel: RssChannel) -> Result<(), Self::Error>;
-    
 
     fn save_articles(&mut self, rss_channel: RssChannel) -> Result<(), Self::Error>;
-
 }
 
 // CREATE TABLE rssopml (title TEXT, description TEXT, htmlurl TEXT, xmlurl TEXT, titles TEXT);
@@ -87,42 +83,41 @@ impl Db {
             .map(|value| value.title.clone())
             .collect();
 
-
         Ok(Titles { titles })
     }
 
     pub fn rss_title(&self, xmlurl: &str) -> anyhow::Result<String> {
         let title = self
-        .articles
-        .get(xmlurl)
-        .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
-        .channel_title.clone();
+            .articles
+            .get(xmlurl)
+            .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
+            .channel_title
+            .clone();
 
         Ok(title)
     }
 
-
     fn description(&self, xmlurl: &str) -> anyhow::Result<String> {
         let description = self
-        .articles
-        .get(xmlurl)
-        .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
-        .description.clone();
+            .articles
+            .get(xmlurl)
+            .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
+            .description
+            .clone();
 
         Ok(description)
     }
 
     fn html_url(&self, xmlurl: &str) -> anyhow::Result<String> {
         let result = self
-        .articles
-        .get(xmlurl)
-        .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
-        .channel_html_url.clone();
+            .articles
+            .get(xmlurl)
+            .ok_or(anyhow::anyhow!("This {} have not any articles", xmlurl))?
+            .channel_html_url
+            .clone();
 
         Ok(result)
     }
-
-    
 }
 
 impl DatabaseKeeper for Db {
@@ -136,7 +131,6 @@ impl DatabaseKeeper for Db {
         self.save(rss_channel)
     }
 }
-
 
 impl DatabaseReader for Db {
     type Error = anyhow::Error;
