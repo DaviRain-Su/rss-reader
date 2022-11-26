@@ -32,9 +32,3 @@ pub fn get_author_address_or_name(rss_url: &str) -> String {
 
     new_author_address
 }
-
-// https://guoyu.submirror.xyz
-pub fn generate_mirror_url(url: &str) -> String {
-    
-    todo!()
-}

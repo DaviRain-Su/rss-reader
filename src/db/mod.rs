@@ -2,16 +2,13 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
-use crate::{
-    element::{Articles, RssChannel},
-    utils::{get_author_address_or_name, generate_mirror_url},
-};
+use crate::element::{Articles, RssChannel};
 
 pub mod nosql_database;
+pub mod preprocess;
 pub mod sql_database;
 pub mod titles;
 pub mod utils;
-pub mod preprocess;
 
 pub static GLOBAL_DATA: Lazy<Mutex<Db>> = Lazy::new(|| Mutex::new(Db::default()));
 

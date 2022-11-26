@@ -6,9 +6,7 @@ pub struct XmlChannel {
     pub channel: Channel,
 }
 
-
-
-use crate::{db::{GLOBAL_DATA, preprocess::process},  utils::get_author_address_or_name};
+use crate::db::{preprocess::process, GLOBAL_DATA};
 
 /// get Titles
 pub fn get_titles(url: &str) -> anyhow::Result<Vec<String>> {
@@ -17,10 +15,9 @@ pub fn get_titles(url: &str) -> anyhow::Result<Vec<String>> {
     let channel = Channel::read_from(&response[..])?;
     // println!("channel: {:?}", channel);
 
-
     let xml_channel = XmlChannel {
         xmlurl: url.to_string(),
-        channel
+        channel,
     };
 
     process(xml_channel, &GLOBAL_DATA)?;
@@ -32,8 +29,8 @@ pub fn get_titles(url: &str) -> anyhow::Result<Vec<String>> {
     Ok(rss_titles)
 }
 
-
 #[test]
+#[ignore]
 fn test_get_titles() {
     let titles = get_titles("https://guoyu.submirror.xyz").unwrap();
     println!("{:#?}", titles);

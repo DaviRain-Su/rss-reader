@@ -20,7 +20,8 @@ pub fn process(xml_channel: XmlChannel, db: &Lazy<Mutex<Db>>) -> anyhow::Result<
         None
     };
 
-    let items = xml_channel.channel
+    let items = xml_channel
+        .channel
         .items
         .clone()
         .into_iter()

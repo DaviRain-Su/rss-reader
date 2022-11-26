@@ -7,7 +7,7 @@ use tui::{
     Frame,
 };
 
-use super::{app::App, logic::get_titles, DEFAULT_TIEL};
+use super::{app::App, DEFAULT_TIEL};
 
 pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let size = f.size();

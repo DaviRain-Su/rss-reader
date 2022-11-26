@@ -40,6 +40,7 @@ async fn main() -> anyhow::Result<()> {
                 })
                 .collect::<Vec<_>>();
         }
+        command::Command::Clean => println!("clean databae!"),
     }
 
     Ok(())

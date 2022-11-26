@@ -14,6 +14,9 @@ pub enum Command {
     /// rss category
     #[structopt(name = "category")]
     Category,
+    /// clean database
+    #[structopt(name = "clean")]
+    Clean,
 }
 
 #[derive(Debug, StructOpt)]
