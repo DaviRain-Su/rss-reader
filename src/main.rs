@@ -13,8 +13,10 @@ pub mod utils;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let default_config = include_str!("../.rss/RAW.opml");
+    let default_config = include_str!("../.rss/saimple_raw.opml");
     let document = Config::from_str(default_config)?;
+    println!("ducument: {:#?}", document);
+
 
     let opt = ApplicationArguments::from_args();
     match opt.command {
