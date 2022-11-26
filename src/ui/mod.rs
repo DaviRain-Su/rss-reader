@@ -31,7 +31,7 @@ pub fn run_ui(config: &Config) -> anyhow::Result<()> {
     let binding = config.category();
     let category = binding.iter().map(|value| value.as_str()).collect();
     // create app and run it
-    let app = App::new(config.clone(), category);
+    let app = App::new(config.clone(), category)?;
     let res = run_app(&mut terminal, app);
 
     // restore terminal

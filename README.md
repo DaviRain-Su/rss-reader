@@ -5,7 +5,7 @@
 
 - [x] color print to terminal
 - [x] read rss file from opml file
-- [x] command line ui
+- [x] command line ui, used ui is tui-rs
 - [ ] command line reader rss article
 - [x] cache by store to local storage, database
 - [ ] login by ehtereum address, or near address, or solana address, etc.

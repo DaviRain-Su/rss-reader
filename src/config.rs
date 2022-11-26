@@ -57,6 +57,19 @@ impl Config {
         result
     }
 
+    /// get all rss url
+    pub fn get_all_rss_url(&self) -> Vec<String> {
+        let mut result = Vec::new();
+
+        for item in self.body().outlines.iter() {
+            for i in item.outlines.iter() {
+                result.push(i.xml_url.clone().unwrap_or_default()); // todo: fix unwrap_or_default()
+            }
+        }
+
+        result
+    }
+
     pub fn outlines(&self, index: usize) -> Vec<TitleAndRssUrl> {
         let mut result = vec![];
         if let Some(outline) = self.body().outlines.get(index) {

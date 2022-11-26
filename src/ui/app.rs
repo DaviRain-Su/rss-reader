@@ -1,3 +1,6 @@
+use std::{sync::Arc, future::Future};
+use tokio::runtime::Runtime;
+
 use super::stateful_list::StatefulList;
 use crate::{config::TitleAndRssUrl, Config};
 
@@ -6,10 +9,11 @@ pub struct App<'a> {
     pub titles: Vec<&'a str>,
     pub index: usize,
     pub items: Vec<StatefulList<(TitleAndRssUrl, usize)>>,
+    pub runtime: Arc<Runtime>,
 }
 
 impl<'a> App<'a> {
-    pub fn new(config: Config, categoryes: Vec<&'a str>) -> App<'a> {
+    pub fn new(config: Config, categoryes: Vec<&'a str>) -> anyhow::Result<App<'a>> {
         let mut items = vec![];
 
         let titles = config
@@ -21,12 +25,19 @@ impl<'a> App<'a> {
 
         items.push(StatefulList::with_items(titles));
 
-        App {
+        let runtime = Arc::new(Runtime::new()?);
+
+        Ok(App {
             config,
             titles: categoryes,
             index: 0,
             items,
-        }
+            runtime,
+        })
+    }
+
+    pub fn block_on<F: Future>(&self, future: F) -> F::Output {
+        self.runtime.block_on(future)
     }
 
     pub fn next(&mut self) {

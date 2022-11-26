@@ -184,6 +184,7 @@ pub fn is_exist(xmlurl: &str) -> anyhow::Result<bool> {
 }
 
 #[test]
+#[ignore]
 fn test_create_db() {
     // create
     // let _ = create_rss_database().unwrap();
