@@ -1,5 +1,4 @@
 use once_cell::sync::Lazy;
-// use rss::Channel;
 use std::sync::Mutex;
 
 use crate::db::Db;

@@ -8,7 +8,8 @@ pub fn open_database_with_path(path: &str) -> Database {
     db
 }
 
-/// key is hash(rssxmlurl + title), value is encode articles string
+// key is hash(rssxmlurl + title), value is encode articles string
+/// insert data
 pub fn insert(key: &str, value: &[u8]) -> anyhow::Result<()> {
     let db = open_database_with_path(NOSQL_DATABASE);
     db.map_put(SIMPLE_MAP_KEY, key, value)?;
@@ -16,6 +17,7 @@ pub fn insert(key: &str, value: &[u8]) -> anyhow::Result<()> {
     Ok(())
 }
 
+/// get data
 pub fn get(key: &str) -> anyhow::Result<Vec<u8>> {
     let db = open_database_with_path(NOSQL_DATABASE);
     let r = db

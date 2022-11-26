@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Titles {
-    titles: Vec<String>,
+    pub titles: Vec<String>,
 }
 
 impl Default for Titles {
