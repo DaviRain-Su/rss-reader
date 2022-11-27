@@ -30,7 +30,7 @@ pub fn run_ui(config: &Config) -> anyhow::Result<()> {
     let mut terminal = Terminal::new(backend)?;
 
     let binding = config.category();
-    let category = binding.iter().map(|value| value.as_str()).collect();
+    let category = binding.iter().map(|value| value.clone()).collect();
     // create app and run it
     let app = App::new(config.clone(), category)?;
     let res = run_app(&mut terminal, app);
@@ -51,7 +51,7 @@ pub fn run_ui(config: &Config) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App<'_>) -> anyhow::Result<()> {
+fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> anyhow::Result<()> {
     loop {
         terminal.draw(|f| {
             ui(f, &mut app);
@@ -60,19 +60,13 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App<'_>) -> anyhow::
         if let Event::Key(key) = event::read()? {
             match key.code {
                 KeyCode::Char('q') => return Ok(()),
-                KeyCode::Right => app.next(),
-                KeyCode::Left => app.previous(),
+                KeyCode::Right => app.on_right()?,
+                KeyCode::Left => app.on_left()?,
                 KeyCode::Up => {
-                    // app.current_tab_items
-                    //     .get_mut(app.current_tabs_index)
-                    //     .unwrap()
-                    //     .previous();
+                    app.on_up()?;
                 }
                 KeyCode::Down => {
-                    // app.current_tab_items
-                    // .get_mut(app.current_tabs_index)
-                    // .unwrap()
-                    // .next();
+                    app.on_down()?;
                 }
                 _ => {}
             }
