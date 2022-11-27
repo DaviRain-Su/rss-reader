@@ -22,6 +22,8 @@ pub struct App<'a> {
     // tabs
     // tabs title
     pub tabs_titles: Vec<&'a str>,
+    // current tabs title
+    pub current_tabs_title: String,
     // current tabs title index
     pub current_tabs_index: usize,
     // current tabs title feeds xml url and title
@@ -33,13 +35,16 @@ pub struct App<'a> {
 
 impl<'a> App<'a> {
     pub fn new(config: Config, tabs_titles: Vec<&'a str>) -> anyhow::Result<App<'a>> {
-        let titles = config
+        // get current tabs title
+        let current_tabs_title = tabs_titles[0].to_string();
+
+        let entry_titles = config
             .outlines(0)
             .into_iter()
             .map(|value| value)
             .collect::<Vec<TitleAndRssUrl>>();
 
-        let current_tab_items = StatefulList::with_items(titles);
+        let current_tab_items = StatefulList::with_items(entry_titles);
 
         let runtime = Arc::new(Runtime::new()?);
 
@@ -47,6 +52,7 @@ impl<'a> App<'a> {
             config,
             selected: Selected::None,
             tabs_titles,
+            current_tabs_title,
             current_tabs_index: 0,
             current_tab_items,
             runtime,
@@ -67,6 +73,8 @@ impl<'a> App<'a> {
     pub fn next(&mut self) {
         self.current_tabs_index = (self.current_tabs_index + 1) % self.tabs_titles.len();
 
+        self.current_tabs_title = self.tabs_titles[self.current_tabs_index].to_string();
+
         // update current tabs feeds xml url
         let titles = self
             .config
@@ -84,6 +92,8 @@ impl<'a> App<'a> {
         } else {
             self.current_tabs_index = self.tabs_titles.len() - 1;
         }
+
+        self.current_tabs_title = self.tabs_titles[self.current_tabs_index].to_string();
 
         let titles = self
             .config

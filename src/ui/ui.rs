@@ -1,6 +1,6 @@
 use tui::{
     backend::Backend,
-    layout::{Alignment, Constraint, Direction, Layout},
+    layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
     widgets::{Block, Borders, List, ListItem, Paragraph, Tabs, Wrap},
@@ -12,15 +12,32 @@ use crate::{config::TitleAndRssUrl, db::titles::Titles};
 use super::{app::App, logic::get_titles, DEFAULT_TIEL};
 
 pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
-    let size = f.size();
-    let chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(10), Constraint::Percentage(80)].as_ref())
-        .split(f.size());
+    // predraw
+    let chunks = predraw(f);
 
     let block = Block::default().style(Style::default().bg(Color::White).fg(Color::Black));
-    f.render_widget(block, size);
+    f.render_widget(block, f.size());
 
+    // draw tabs
+    draw_tabs(f, app, chunks[0]);
+
+    let chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(25), Constraint::Percentage(75)].as_ref())
+        .split(chunks[1]);
+
+    // draw entry title
+    draw_entry_title(f, app, chunks[0])
+}
+
+pub fn predraw<B: Backend>(f: &Frame<B>) -> Vec<Rect> {
+    Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(10), Constraint::Percentage(80)].as_ref())
+        .split(f.size())
+}
+
+pub fn draw_tabs<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect) {
     let titles = app
         .tabs_titles
         .iter()
@@ -43,17 +60,12 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
                 .add_modifier(Modifier::BOLD)
                 .bg(Color::Black),
         );
-    f.render_widget(tabs, chunks[0]);
+    f.render_widget(tabs, area);
+}
 
-    let chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(25), Constraint::Percentage(75)].as_ref())
-        .split(chunks[1]);
-
-    let n = app.current_tabs_index;
-
-    // get title
-    let title = app.tabs_titles.get(n).unwrap_or(&DEFAULT_TIEL).clone();
+pub fn draw_entry_title<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect) {
+    // get title todo need to get current tabs title
+    let title = app.current_tabs_title.clone();
 
     // Iterate through all elements in the `items` app and append some debug text to it.
     // display title
@@ -83,46 +95,5 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .highlight_symbol(">> ");
 
     // We can now render the item list
-    f.render_stateful_widget(
-        items.clone(),
-        chunks[0],
-        &mut app.current_tab_items.state_mut(),
-    );
-
-    // display rss_url content
-    // if let Some(value) = app.items.get(n) {
-    //     // display title
-    //     let items = value
-    //         .items()
-    //         .iter()
-    //         .map(|i| i.0.clone())
-    //         .collect::<Vec<TitleAndRssUrl>>();
-
-    //     for item in items.iter() {
-    //         let rss_title = item.title.clone();
-    //         let rss_url = item.rss_url.clone();
-
-    //         let titles = app.block_on(get_titles(&rss_url));
-
-    //         let titles = titles
-    //             .unwrap_or(Titles::default())
-    //             .titles
-    //             .into_iter()
-    //             .map(|item| {
-    //                 // Spans::from(Span::styled(item, Style::default().fg(Color::Red)))
-    //                 Spans::from(item)
-    //             })
-    //             .collect::<Vec<Spans>>();
-
-    //         let items = Paragraph::new(titles)
-    //             .block(Block::default().title(rss_title).borders(Borders::ALL))
-    //             .style(Style::default().fg(Color::White).bg(Color::Black))
-    //             .alignment(Alignment::Center)
-    //             .wrap(Wrap { trim: true });
-
-    //         // We can now render the item list
-    //         f.render_widget(items, chunks[1]);
-    //         // f.render_stateful_widget(items.clone(), chunks[1], &mut app.items[n].state_mut());
-    //     }
-    // }
+    f.render_stateful_widget(items.clone(), area, &mut app.current_tab_items.state_mut());
 }
