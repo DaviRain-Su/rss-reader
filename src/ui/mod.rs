@@ -63,16 +63,16 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App<'_>) -> anyhow::
                 KeyCode::Right => app.next(),
                 KeyCode::Left => app.previous(),
                 KeyCode::Up => {
-                    app.current_tab_items
-                        .get_mut(app.tabs_index)
-                        .unwrap()
-                        .previous();
+                    // app.current_tab_items
+                    //     .get_mut(app.current_tabs_index)
+                    //     .unwrap()
+                    //     .previous();
                 }
                 KeyCode::Down => {
-                    app.current_tab_items
-                        .get_mut(app.tabs_index)
-                        .unwrap()
-                        .next();
+                    // app.current_tab_items
+                    // .get_mut(app.current_tabs_index)
+                    // .unwrap()
+                    // .next();
                 }
                 _ => {}
             }

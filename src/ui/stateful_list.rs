@@ -1,8 +1,8 @@
 use tui::widgets::ListState;
 
 pub struct StatefulList<T> {
-    state: ListState,
-    items: Vec<T>,
+    pub state: ListState,
+    pub items: Vec<T>,
 }
 
 impl<T> StatefulList<T> {

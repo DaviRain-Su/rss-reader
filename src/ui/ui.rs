@@ -36,7 +36,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     // display tabs
     let tabs = Tabs::new(titles)
         .block(Block::default().borders(Borders::ALL).title("Tabs"))
-        .select(app.tabs_index)
+        .select(app.current_tabs_index)
         .style(Style::default().fg(Color::Cyan))
         .highlight_style(
             Style::default()
@@ -50,45 +50,44 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .constraints([Constraint::Percentage(25), Constraint::Percentage(75)].as_ref())
         .split(chunks[1]);
 
-    let n = app.tabs_index;
+    let n = app.current_tabs_index;
 
     // get title
     let title = app.tabs_titles.get(n).unwrap_or(&DEFAULT_TIEL).clone();
 
     // Iterate through all elements in the `items` app and append some debug text to it.
-    if let Some(value) = app.current_tab_items.get(n) {
-        // display title
-        let items = value
-            .items()
-            .iter()
-            .map(|i| {
-                let lines = vec![Spans::from(i.0.title.clone())];
-                ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
-            })
-            .collect::<Vec<ListItem>>();
+    // display title
+    let items = app
+        .current_tab_items
+        .items()
+        .iter()
+        .map(|i| {
+            let lines = vec![Spans::from(i.title.clone())];
+            ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
+        })
+        .collect::<Vec<ListItem>>();
 
-        // Create a List from all list items and highlight the currently selected one
-        let items = List::new(items)
-            .block(
-                Block::default()
-                    .borders(Borders::ALL)
-                    .title(title)
-                    .title_alignment(Alignment::Center),
-            )
-            .highlight_style(
-                Style::default()
-                    .bg(Color::LightGreen)
-                    .add_modifier(Modifier::BOLD),
-            )
-            .highlight_symbol(">> ");
+    // Create a List from all list items and highlight the currently selected one
+    let items = List::new(items)
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title(title)
+                .title_alignment(Alignment::Center),
+        )
+        .highlight_style(
+            Style::default()
+                .bg(Color::LightGreen)
+                .add_modifier(Modifier::BOLD),
+        )
+        .highlight_symbol(">> ");
 
-        // We can now render the item list
-        f.render_stateful_widget(
-            items.clone(),
-            chunks[0],
-            &mut app.current_tab_items[n].state_mut(),
-        );
-    }
+    // We can now render the item list
+    f.render_stateful_widget(
+        items.clone(),
+        chunks[0],
+        &mut app.current_tab_items.state_mut(),
+    );
 
     // display rss_url content
     // if let Some(value) = app.items.get(n) {

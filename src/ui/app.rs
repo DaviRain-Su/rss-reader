@@ -20,9 +20,12 @@ pub struct App<'a> {
     // modes
     pub selected: Selected,
     // tabs
+    // tabs title
     pub tabs_titles: Vec<&'a str>,
-    pub tabs_index: usize,
-    pub current_tab_items: Vec<StatefulList<(TitleAndRssUrl, usize)>>,
+    // current tabs title index
+    pub current_tabs_index: usize,
+    // current tabs title feeds xml url and title
+    pub current_tab_items: StatefulList<TitleAndRssUrl>,
 
     // runtime
     pub runtime: Arc<Runtime>,
@@ -30,16 +33,13 @@ pub struct App<'a> {
 
 impl<'a> App<'a> {
     pub fn new(config: Config, tabs_titles: Vec<&'a str>) -> anyhow::Result<App<'a>> {
-        let mut current_tab_items = vec![];
-
         let titles = config
             .outlines(0)
             .into_iter()
-            .enumerate()
-            .map(|(idx, value)| (value, idx))
-            .collect::<Vec<(TitleAndRssUrl, usize)>>();
+            .map(|value| value)
+            .collect::<Vec<TitleAndRssUrl>>();
 
-        current_tab_items.push(StatefulList::with_items(titles));
+        let current_tab_items = StatefulList::with_items(titles);
 
         let runtime = Arc::new(Runtime::new()?);
 
@@ -47,7 +47,7 @@ impl<'a> App<'a> {
             config,
             selected: Selected::None,
             tabs_titles,
-            tabs_index: 0,
+            current_tabs_index: 0,
             current_tab_items,
             runtime,
             entry_selection_position: 0,
@@ -65,50 +65,41 @@ impl<'a> App<'a> {
     }
 
     pub fn next(&mut self) {
-        self.tabs_index = (self.tabs_index + 1) % self.tabs_titles.len();
+        self.current_tabs_index = (self.current_tabs_index + 1) % self.tabs_titles.len();
 
-        if let Some(_value) = self.current_tab_items.get(self.tabs_index) {
-        } else {
-            let titles = self
-                .config
-                .outlines(self.tabs_index)
-                .into_iter()
-                .enumerate()
-                .map(|(idx, value)| (value, idx))
-                .collect::<Vec<(TitleAndRssUrl, usize)>>();
+        // update current tabs feeds xml url
+        let titles = self
+            .config
+            .outlines(self.current_tabs_index)
+            .into_iter()
+            .map(|value| value)
+            .collect::<Vec<TitleAndRssUrl>>();
 
-            self.current_tab_items
-                .push(StatefulList::with_items(titles));
-        }
+        self.current_tab_items = StatefulList::with_items(titles);
     }
 
     pub fn previous(&mut self) {
-        if self.tabs_index > 0 {
-            self.tabs_index -= 1;
+        if self.current_tabs_index > 0 {
+            self.current_tabs_index -= 1;
         } else {
-            self.tabs_index = self.tabs_titles.len() - 1;
+            self.current_tabs_index = self.tabs_titles.len() - 1;
         }
 
-        if let Some(_value) = self.current_tab_items.get(self.tabs_index) {
-        } else {
-            let titles = self
-                .config
-                .outlines(self.tabs_index)
-                .into_iter()
-                .enumerate()
-                .map(|(idx, value)| (value, idx))
-                .collect::<Vec<(TitleAndRssUrl, usize)>>();
+        let titles = self
+            .config
+            .outlines(self.current_tabs_index)
+            .into_iter()
+            .map(|value| value)
+            .collect::<Vec<TitleAndRssUrl>>();
 
-            self.current_tab_items
-                .push(StatefulList::with_items(titles));
-        }
+        self.current_tab_items = StatefulList::with_items(titles);
     }
 
     fn update_entry_selection_position(&mut self) {
-        if self.current_tab_items.is_empty() {
+        if self.current_tab_items.items.is_empty() {
             self.entry_selection_position = 0
-        } else if self.entry_selection_position > self.current_tab_items.len() - 1 {
-            self.entry_selection_position = self.current_tab_items.len() - 1
+        } else if self.entry_selection_position > self.current_tab_items.items.len() - 1 {
+            self.entry_selection_position = self.current_tab_items.items.len() - 1
         };
     }
 
@@ -191,9 +182,9 @@ impl<'a> App<'a> {
             }
             Selected::Entries => {
                 // if !self.items.is_empty() {
-                    // self.entries.previous();
-                    // self.entry_selection_position = self.entries.state.selected().unwrap();
-                    // self.update_current_entry_meta()?;
+                // self.entries.previous();
+                // self.entry_selection_position = self.entries.state.selected().unwrap();
+                // self.update_current_entry_meta()?;
                 // }
             }
             Selected::Entry => {
@@ -212,9 +203,9 @@ impl<'a> App<'a> {
         match self.selected {
             Selected::Feeds => {
                 // if !self.entries.items.is_empty() {
-                    // self.selected = Selected::Entries;
-                    // self.entries.reset();
-                    // self.update_current_entry_meta()?;
+                // self.selected = Selected::Entries;
+                // self.entries.reset();
+                // self.update_current_entry_meta()?;
                 // }
                 Ok(())
             }
@@ -233,9 +224,9 @@ impl<'a> App<'a> {
             }
             Selected::Entries => {
                 // if !self.entries.items.is_empty() {
-                    // self.entries.next();
-                    // self.entry_selection_position = self.entries.state.selected().unwrap();
-                    // self.update_current_entry_meta()?;
+                // self.entries.next();
+                // self.entry_selection_position = self.entries.state.selected().unwrap();
+                // self.update_current_entry_meta()?;
                 // }
             }
             Selected::Entry => {
