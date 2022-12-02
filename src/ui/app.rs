@@ -52,11 +52,12 @@ impl App {
         let currtn_entry_rss_url = entry_titles[0].clone().rss_url;
         let runtime = Arc::new(Runtime::new()?);
 
-        let current_category_titles = runtime.block_on(logic::get_titles(&currtn_entry_rss_url))?
+        let current_category_titles = runtime
+            .block_on(logic::get_titles(&currtn_entry_rss_url))?
             .titles
             .clone();
 
-        let current_entry_titles  = StatefulList::with_items(current_category_titles);
+        let current_entry_titles = StatefulList::with_items(current_category_titles);
 
         Ok(App {
             config,
@@ -89,9 +90,21 @@ impl App {
             .titles
             .clone();
 
-
         self.current_entry_titles = StatefulList::with_items(current_category_titles);
         Ok(())
+    }
+
+    pub fn reset_current_entry_items(&mut self) {
+        let entry_titles = self
+            .config
+            .outlines(self.current_category_index)
+            .into_iter()
+            .map(|value| value)
+            .collect::<Vec<TitleAndRssUrl>>();
+
+        let current_category_items = StatefulList::with_items(entry_titles.clone());
+
+        self.current_category_items = current_category_items;
     }
 
     fn update_entry_selection_position(&mut self) {
@@ -154,9 +167,9 @@ impl App {
 
     pub fn on_left(&mut self) -> anyhow::Result<()> {
         match self.selected {
-            Selected::Feeds =>  {
+            Selected::Feeds => {
                 self.selected = Selected::Category;
-            },
+            }
             Selected::Entries => {
                 self.entry_selection_position = 0;
                 self.selected = Selected::Feeds
@@ -188,14 +201,15 @@ impl App {
             Selected::Entry => Ok(()),
             Selected::None => Ok(()),
             Selected::Category => {
-                self.entry_selection_position = 0;
+                // self.entry_selection_position = 0;
 
-                self.currtn_entry_rss_url = self.current_category_items.items[self.entry_selection_position].clone().rss_url;
-                
+                // self.currtn_entry_rss_url = self.current_category_items.items[self.entry_selection_position].clone().rss_url;
+
                 self.selected = Selected::Feeds;
+                self.reset_current_entry_items();
 
                 Ok(())
-            },
+            }
         }
     }
 
@@ -210,12 +224,14 @@ impl App {
                 } else {
                     self.entry_selection_position = self.current_category_items.items.len() - 1;
                 }
-               
-                self.currtn_entry_rss_url = self.current_category_items.items[self.entry_selection_position].clone().rss_url;
+
+                self.currtn_entry_rss_url = self.current_category_items.items
+                    [self.entry_selection_position]
+                    .clone()
+                    .rss_url;
 
                 // update current_entry_titles
                 // self.reset_current_entry_titles()?;
-
             }
             Selected::Entries => {
                 // if !self.items.is_empty() {
@@ -238,10 +254,10 @@ impl App {
                 } else {
                     self.current_category_index = self.category_titles.items.len() - 1;
                 }
-               
+
                 let titles = self.current_category_rss_url(self.current_category_index);
                 self.entrys_len = titles.len();
-               
+
                 self.current_category_items = StatefulList::with_items(titles);
             }
         }
@@ -258,7 +274,10 @@ impl App {
                 self.entry_selection_position =
                     (self.entry_selection_position + 1) % self.current_category_items.items.len();
 
-                self.currtn_entry_rss_url = self.current_category_items.items[self.entry_selection_position].clone().rss_url;
+                self.currtn_entry_rss_url = self.current_category_items.items
+                    [self.entry_selection_position]
+                    .clone()
+                    .rss_url;
 
                 // update current_entry_titles
                 // self.reset_current_entry_titles()?;

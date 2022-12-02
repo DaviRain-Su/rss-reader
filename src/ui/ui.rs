@@ -27,7 +27,10 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .split(chunks[1]);
 
     // draw entry title
-    draw_entry_title(f, app, chunks[0])
+    draw_entry_title(f, app, chunks[0]);
+
+    // draw entrys
+    draw_entrys(f, app, chunks[1]);
 }
 
 pub fn predraw<B: Backend>(f: &Frame<B>) -> Vec<Rect> {
@@ -100,5 +103,44 @@ pub fn draw_entry_title<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect)
         .highlight_symbol(">> ");
 
     // We can now render the item list
-    f.render_stateful_widget(items.clone(), area, &mut app.current_category_items.state_mut());
+    f.render_stateful_widget(
+        items.clone(),
+        area,
+        &mut app.current_category_items.state_mut(),
+    );
+}
+
+pub fn draw_entrys<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect) {
+
+    let text = app
+        .current_entry_titles
+        .items
+        .iter()
+        .map(|item| {
+            let lines = vec![Spans::from(item.clone())];
+            ListItem::new(lines).style(Style::default().fg(Color::Black).bg(Color::White))
+        })
+        .collect::<Vec<ListItem>>();
+
+       // Create a List from all list items and highlight the currently selected one
+       let items = List::new(text)
+       .block(
+           Block::default()
+               .borders(Borders::ALL)
+               .title("")
+               .title_alignment(Alignment::Center),
+       )
+       .highlight_style(
+           Style::default()
+               .bg(Color::LightGreen)
+               .add_modifier(Modifier::BOLD),
+       )
+       .highlight_symbol(">> ");
+
+   // We can now render the item list
+   f.render_stateful_widget(
+       items.clone(),
+       area,
+       &mut app.current_category_items.state_mut(),
+   );
 }
