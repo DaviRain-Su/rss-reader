@@ -1,6 +1,6 @@
 #[derive(Clone, Debug)]
 pub enum Selected {
-    Tabs,
+    Category,
     Feeds,
     Entries,
     Entry,

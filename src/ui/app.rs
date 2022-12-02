@@ -11,6 +11,7 @@ pub struct App {
     // entry
     pub entry_selection_position: usize,
     pub entry_scroll_position: u16,
+    pub entrys_len: usize,
     pub entry_lines_len: usize,
     pub entry_lines_rendered_len: u16,
     pub entry_column_width: u16,
@@ -20,52 +21,60 @@ pub struct App {
     // current entry rss url
     pub currtn_entry_rss_url: String,
     // current entry title
-    pub current_entry_titles: Vec<String>,
-    // current tabs title feeds xml url and title
-    pub current_tab_items: StatefulList<TitleAndRssUrl>,
+    pub current_entry_titles: StatefulList<String>,
+    // current category title feeds xml url and title
+    pub current_category_items: StatefulList<TitleAndRssUrl>,
 
     // modes
     pub selected: Selected,
-    // tabs
-    // tabs title
-    pub tabs_titles: StatefulList<String>,
-    // current tabs title index
-    pub current_tabs_index: usize,
+    // category
+    // category title
+    pub category_titles: StatefulList<String>,
+    // current category title index
+    pub current_category_index: usize,
 
     // runtime
     pub runtime: Arc<Runtime>,
 }
 
 impl App {
-    pub fn new(config: Config, tabs_titles: Vec<String>) -> anyhow::Result<App> {
-        // get current tabs title
+    pub fn new(config: Config, category_titles: Vec<String>) -> anyhow::Result<App> {
+        // get current category title
         let entry_titles = config
             .outlines(0)
             .into_iter()
             .map(|value| value)
             .collect::<Vec<TitleAndRssUrl>>();
 
-        let current_tab_items = StatefulList::with_items(entry_titles);
-        let tabs_titles = StatefulList::with_items(tabs_titles);
+        let current_category_items = StatefulList::with_items(entry_titles.clone());
+        let category_titles = StatefulList::with_items(category_titles);
 
+        let currtn_entry_rss_url = entry_titles[0].clone().rss_url;
         let runtime = Arc::new(Runtime::new()?);
+
+        let current_category_titles = runtime.block_on(logic::get_titles(&currtn_entry_rss_url))?
+            .titles
+            .clone();
+
+        let current_entry_titles  = StatefulList::with_items(current_category_titles);
 
         Ok(App {
             config,
-            selected: Selected::Tabs,
-            tabs_titles,
-            current_tabs_index: 0,
-            current_tab_items,
+            selected: Selected::Category,
+            category_titles,
+            current_category_index: 0,
+            current_category_items,
             runtime,
             entry_selection_position: 0,
             current_entry_text: String::new(),
             entry_scroll_position: 0,
             entry_lines_len: 0,
+            entrys_len: 0,
             entry_lines_rendered_len: 0,
             entry_column_width: 0,
             current_entry_article: None,
-            current_entry_titles: vec![],
-            currtn_entry_rss_url: String::new(),
+            current_entry_titles,
+            currtn_entry_rss_url,
         })
     }
 
@@ -75,20 +84,21 @@ impl App {
 
     // reset current entry titles
     pub fn reset_current_entry_titles(&mut self) -> anyhow::Result<()> {
-        let current_tab_titles = self
+        let current_category_titles = self
             .block_on(logic::get_titles(&self.currtn_entry_rss_url))?
             .titles
             .clone();
 
-        self.current_entry_titles = current_tab_titles;
+
+        self.current_entry_titles = StatefulList::with_items(current_category_titles);
         Ok(())
     }
 
     fn update_entry_selection_position(&mut self) {
-        if self.current_tab_items.items.is_empty() {
+        if self.current_category_items.items.is_empty() {
             self.entry_selection_position = 0
-        } else if self.entry_selection_position > self.current_tab_items.items.len() - 1 {
-            self.entry_selection_position = self.current_tab_items.items.len() - 1
+        } else if self.entry_selection_position > self.current_category_items.items.len() - 1 {
+            self.entry_selection_position = self.current_category_items.items.len() - 1
         };
     }
 
@@ -144,7 +154,9 @@ impl App {
 
     pub fn on_left(&mut self) -> anyhow::Result<()> {
         match self.selected {
-            Selected::Feeds => (),
+            Selected::Feeds =>  {
+                self.selected = Selected::Category;
+            },
             Selected::Entries => {
                 self.entry_selection_position = 0;
                 self.selected = Selected::Feeds
@@ -157,7 +169,7 @@ impl App {
                 }
             }
             Selected::None => (),
-            Selected::Tabs => {}
+            Selected::Category => {}
         }
 
         Ok(())
@@ -166,26 +178,44 @@ impl App {
     pub fn on_right(&mut self) -> anyhow::Result<()> {
         match self.selected {
             Selected::Feeds => {
-                if !self.current_tab_items.items.is_empty() {
-                    self.selected = Selected::Entries;
-                    self.reset_current_entry_titles()?;
-                }
+                // if !self.current_category_items.items.is_empty() {
+                //     self.selected = Selected::Entries;
+                //     self.reset_current_entry_titles()?;
+                // }
                 Ok(())
             }
             Selected::Entries => self.on_enter(),
             Selected::Entry => Ok(()),
             Selected::None => Ok(()),
-            Selected::Tabs => Ok(()),
+            Selected::Category => {
+                self.entry_selection_position = 0;
+
+                self.currtn_entry_rss_url = self.current_category_items.items[self.entry_selection_position].clone().rss_url;
+                
+                self.selected = Selected::Feeds;
+
+                Ok(())
+            },
         }
     }
 
     pub fn on_up(&mut self) -> anyhow::Result<()> {
         match self.selected {
             Selected::Feeds => {
+                self.current_category_items.previous();
+
                 // update the currtn_entry_rss_url
+                if self.entry_selection_position > 0 {
+                    self.entry_selection_position -= 1;
+                } else {
+                    self.entry_selection_position = self.current_category_items.items.len() - 1;
+                }
+               
+                self.currtn_entry_rss_url = self.current_category_items.items[self.entry_selection_position].clone().rss_url;
+
                 // update current_entry_titles
-                // self.feeds.previous();
-                // self.update_current_feed_and_entries()?;
+                // self.reset_current_entry_titles()?;
+
             }
             Selected::Entries => {
                 // if !self.items.is_empty() {
@@ -200,18 +230,19 @@ impl App {
                 };
             }
             Selected::None => (),
-            Selected::Tabs => {
-                self.tabs_titles.previous();
+            Selected::Category => {
+                self.category_titles.previous();
 
-                if self.current_tabs_index > 0 {
-                    self.current_tabs_index -= 1;
+                if self.current_category_index > 0 {
+                    self.current_category_index -= 1;
                 } else {
-                    self.current_tabs_index = self.tabs_titles.items.len() - 1;
+                    self.current_category_index = self.category_titles.items.len() - 1;
                 }
                
-                let titles = self.current_tabs_rss_url(self.current_tabs_index);
+                let titles = self.current_category_rss_url(self.current_category_index);
+                self.entrys_len = titles.len();
                
-                self.current_tab_items = StatefulList::with_items(titles);
+                self.current_category_items = StatefulList::with_items(titles);
             }
         }
 
@@ -221,8 +252,16 @@ impl App {
     pub fn on_down(&mut self) -> anyhow::Result<()> {
         match self.selected {
             Selected::Feeds => {
-                // self.feeds.next();
-                // self.update_current_feed_and_entries()?;
+                self.current_category_items.next();
+
+                // update the currtn_entry_rss_url
+                self.entry_selection_position =
+                    (self.entry_selection_position + 1) % self.current_category_items.items.len();
+
+                self.currtn_entry_rss_url = self.current_category_items.items[self.entry_selection_position].clone().rss_url;
+
+                // update current_entry_titles
+                // self.reset_current_entry_titles()?;
             }
             Selected::Entries => {
                 // if !self.entries.items.is_empty() {
@@ -237,23 +276,23 @@ impl App {
                 };
             }
             Selected::None => (),
-            Selected::Tabs => {
-                self.tabs_titles.next();
-                self.current_tabs_index =
-                    (self.current_tabs_index + 1) % self.tabs_titles.items.len();
+            Selected::Category => {
+                self.category_titles.next();
+                self.current_category_index =
+                    (self.current_category_index + 1) % self.category_titles.items.len();
 
-                // update current tabs feeds xml url
-                let titles = self.current_tabs_rss_url(self.current_tabs_index);
+                // update current Category feeds xml url
+                let titles = self.current_category_rss_url(self.current_category_index);
 
-                self.current_tab_items = StatefulList::with_items(titles);
+                self.current_category_items = StatefulList::with_items(titles);
             }
         }
 
         Ok(())
     }
 
-    /// get the current tabs rss urls
-    pub fn current_tabs_rss_url(&self, index: usize) -> Vec<TitleAndRssUrl> {
+    /// get the current category rss urls
+    pub fn current_category_rss_url(&self, index: usize) -> Vec<TitleAndRssUrl> {
         self.config
             .outlines(index)
             .into_iter()

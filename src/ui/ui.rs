@@ -18,8 +18,8 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let block = Block::default().style(Style::default().bg(Color::White).fg(Color::Black));
     f.render_widget(block, f.size());
 
-    // draw tabs
-    draw_tabs(f, app, chunks[0]);
+    // draw category
+    draw_category(f, app, chunks[0]);
 
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
@@ -37,9 +37,9 @@ pub fn predraw<B: Backend>(f: &Frame<B>) -> Vec<Rect> {
         .split(f.size())
 }
 
-pub fn draw_tabs<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect) {
+pub fn draw_category<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect) {
     let items = app
-        .tabs_titles
+        .category_titles
         .items
         .iter()
         .map(|item| {
@@ -64,7 +64,7 @@ pub fn draw_tabs<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect) {
         .highlight_symbol(">> ");
 
     // f.render_widget(items, area);
-    f.render_stateful_widget(items, area, &mut app.tabs_titles.state);
+    f.render_stateful_widget(items, area, &mut app.category_titles.state);
 }
 
 pub fn draw_entry_title<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect) {
@@ -75,8 +75,8 @@ pub fn draw_entry_title<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect)
     // Iterate through all elements in the `items` app and append some debug text to it.
     // display title
     let items = app
-        .current_tab_items
-        .items()
+        .current_category_items
+        .items
         .iter()
         .map(|i| {
             let lines = vec![Spans::from(i.title.clone())];
@@ -100,5 +100,5 @@ pub fn draw_entry_title<B: Backend>(f: &mut Frame<B>, app: &mut App, area: Rect)
         .highlight_symbol(">> ");
 
     // We can now render the item list
-    f.render_stateful_widget(items.clone(), area, &mut app.current_tab_items.state_mut());
+    f.render_stateful_widget(items.clone(), area, &mut app.current_category_items.state_mut());
 }
